@@ -1,0 +1,166 @@
+{
+  "type": "childrenofmu:ithk_village",
+  "biomes": "#childrenofmu:has_structure/amethyst_tower",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none",
+  "center": {
+    "template": "childrenofmu:amethyst_tower",
+    "ground_radius": 14,
+    "footprint": 17
+  },
+  "spacing": 3,
+  "buildings": [
+    {
+      "template": "childrenofmu:athenaeum",
+      "ground_radius": 10,
+      "footprint": 17,
+      "min_count": 1,
+      "max_count": 1,
+      "min_distance": 38,
+      "max_distance": 54
+    },
+    {
+      "template": "childrenofmu:athanor",
+      "ground_radius": 10,
+      "footprint": 12,
+      "min_count": 1,
+      "max_count": 1,
+      "min_distance": 34,
+      "max_distance": 54
+    },
+    {
+      "template": "childrenofmu:amethyst_watcher",
+      "ground_radius": 8,
+      "footprint": 14,
+      "min_count": 1,
+      "max_count": 2,
+      "min_distance": 34,
+      "max_distance": 56
+    },
+    {
+      "template": "childrenofmu:nexus",
+      "ground_radius": 8,
+      "footprint": 18,
+      "min_count": 0,
+      "max_count": 1,
+      "min_distance": 38,
+      "max_distance": 56
+    },
+    {
+      "template": "childrenofmu:golem_cradle",
+      "ground_radius": 6,
+      "footprint": 8,
+      "min_count": 1,
+      "max_count": 1,
+      "min_distance": 28,
+      "max_distance": 56
+    },
+    {
+      "template": "childrenofmu:hot_fount",
+      "ground_radius": 5,
+      "footprint": 7,
+      "min_count": 1,
+      "max_count": 1,
+      "min_distance": 26,
+      "max_distance": 56
+    },
+    {
+      "template": "childrenofmu:sleep_lid",
+      "ground_radius": 4,
+      "footprint": 6,
+      "min_count": 2,
+      "max_count": 3,
+      "min_distance": 24,
+      "max_distance": 62
+    },
+    {
+      "template": "childrenofmu:eye_statue",
+      "ground_radius": 4,
+      "footprint": 6,
+      "min_count": 1,
+      "max_count": 1,
+      "min_distance": 24,
+      "max_distance": 58
+    },
+    {
+      "template": "childrenofmu:scrying_pool",
+      "ground_radius": 4,
+      "footprint": 5,
+      "min_count": 0,
+      "max_count": 1,
+      "min_distance": 24,
+      "max_distance": 58,
+      "sink": 2,
+      "follow_slopes": false
+    },
+    {
+      "template": "childrenofmu:star_perch",
+      "ground_radius": 2,
+      "footprint": 4,
+      "min_count": 0,
+      "max_count": 1,
+      "min_distance": 24,
+      "max_distance": 62,
+      "sink": 1,
+      "follow_slopes": false
+    },
+    {
+      "template": "childrenofmu:memory_cairn",
+      "ground_radius": 2,
+      "footprint": 4,
+      "min_count": 0,
+      "max_count": 1,
+      "min_distance": 24,
+      "max_distance": 62
+    },
+    {
+      "template": "childrenofmu:mud_garden",
+      "ground_radius": 3,
+      "footprint": 5,
+      "min_count": 2,
+      "max_count": 3,
+      "min_distance": 24,
+      "max_distance": 66
+    },
+    {
+      "template": "childrenofmu:attuner_shard",
+      "ground_radius": 2,
+      "footprint": 5,
+      "min_count": 2,
+      "max_count": 3,
+      "min_distance": 22,
+      "max_distance": 68
+    },
+    {
+      "template": "childrenofmu:attuner_fork",
+      "ground_radius": 0,
+      "footprint": 4,
+      "min_count": 2,
+      "max_count": 3,
+      "min_distance": 22,
+      "max_distance": 68
+    },
+    {
+      "template": "childrenofmu:attuner_ring",
+      "ground_radius": 2,
+      "footprint": 5,
+      "min_count": 1,
+      "max_count": 2,
+      "min_distance": 22,
+      "max_distance": 68
+    },
+    {
+      "template": "childrenofmu:lens_arch",
+      "ground_radius": 3,
+      "footprint": 5,
+      "min_count": 3,
+      "max_count": 4,
+      "min_distance": 68,
+      "max_distance": 74,
+      "sink": 1,
+      "follow_slopes": false,
+      "radial": true
+    }
+  ]
+}

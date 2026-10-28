@@ -1,0 +1,9 @@
+{
+  "type": "childrenofmu:ithk_building",
+  "biomes": "#childrenofmu:has_structure/amethyst_tower",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none",
+  "template": "childrenofmu:nexus",
+  "ground_radius": 8
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "hanging=false": {
+      "model": "childrenofmu:block/lily_lantern"
+    },
+    "hanging=true": {
+      "model": "childrenofmu:block/lily_lantern_hanging"
+    }
+  }
+}

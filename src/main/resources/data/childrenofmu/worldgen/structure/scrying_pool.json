@@ -1,0 +1,11 @@
+{
+  "type": "childrenofmu:ithk_building",
+  "biomes": "#childrenofmu:has_structure/amethyst_tower",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none",
+  "template": "childrenofmu:scrying_pool",
+  "ground_radius": 4,
+  "sink": 2,
+  "follow_slopes": false
+}

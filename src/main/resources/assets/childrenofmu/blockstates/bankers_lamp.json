@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "childrenofmu:block/bankers_lamp"
+    },
+    "facing=east": {
+      "model": "childrenofmu:block/bankers_lamp",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "childrenofmu:block/bankers_lamp",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "childrenofmu:block/bankers_lamp",
+      "y": 270
+    }
+  }
+}

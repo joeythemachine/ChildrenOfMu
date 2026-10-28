@@ -1,0 +1,227 @@
+[
+[
+[
+1,
+5,
+8
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "true",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+1,
+5,
+17
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "true",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+19,
+5,
+14
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "false",
+"west": "true",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+19,
+5,
+17
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "false",
+"west": "true",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+17,
+4,
+1
+],
+"minecraft:vine",
+{
+"south": "true",
+"east": "false",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+1,
+4,
+16
+],
+"minecraft:vine",
+{
+"south": "true",
+"east": "true",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+19,
+4,
+14
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "false",
+"west": "true",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+1,
+4,
+10
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "true",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+18,
+4,
+1
+],
+"minecraft:vine",
+{
+"south": "true",
+"east": "false",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+1,
+4,
+8
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "true",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+19,
+4,
+17
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "false",
+"west": "true",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+1,
+3,
+6
+],
+"minecraft:vine",
+{
+"south": "true",
+"east": "true",
+"west": "true",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+18,
+2,
+1
+],
+"minecraft:vine",
+{
+"south": "true",
+"east": "true",
+"west": "true",
+"up": "false",
+"north": "true"
+}
+],
+[
+[
+1,
+2,
+6
+],
+"minecraft:vine",
+{
+"south": "true",
+"east": "true",
+"west": "true",
+"up": "false",
+"north": "true"
+}
+],
+[
+[
+18,
+1,
+1
+],
+"minecraft:vine",
+{
+"south": "true",
+"east": "true",
+"west": "true",
+"up": "false",
+"north": "true"
+}
+]
+]

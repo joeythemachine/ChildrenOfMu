@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "childrenofmu:block/frog_idol"
+    },
+    "facing=east": {
+      "model": "childrenofmu:block/frog_idol",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "childrenofmu:block/frog_idol",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "childrenofmu:block/frog_idol",
+      "y": 270
+    }
+  }
+}

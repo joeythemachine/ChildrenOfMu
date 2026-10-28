@@ -1,0 +1,38 @@
+{
+  "structures": [
+    {
+      "structure": "childrenofmu:traveler_hut_rat",
+      "weight": 1
+    },
+    {
+      "structure": "childrenofmu:traveler_hut_cat",
+      "weight": 1
+    },
+    {
+      "structure": "childrenofmu:traveler_hut_bat",
+      "weight": 1
+    },
+    {
+      "structure": "childrenofmu:traveler_hut_dog",
+      "weight": 1
+    },
+    {
+      "structure": "childrenofmu:traveler_hut_frog",
+      "weight": 1
+    },
+    {
+      "structure": "childrenofmu:traveler_hut_goxa",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 40,
+    "separation": 18,
+    "salt": 8811027,
+    "exclusion_zone": {
+      "other_set": "childrenofmu:rcb_city",
+      "chunk_count": 8
+    }
+  }
+}

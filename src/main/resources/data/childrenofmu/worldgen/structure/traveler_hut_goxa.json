@@ -1,0 +1,12 @@
+{
+  "type": "childrenofmu:ithk_building",
+  "biomes": "#childrenofmu:has_structure/traveler_hut",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none",
+  "template": "childrenofmu:traveler_hut_goxa",
+  "ground_radius": 0,
+  "sink": 2,
+  "follow_slopes": false,
+  "level_ground": true
+}

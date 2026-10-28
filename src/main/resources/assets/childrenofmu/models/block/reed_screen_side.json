@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/template_glass_pane_side",
+  "textures": {
+    "pane": "childrenofmu:block/reed_screen",
+    "edge": "childrenofmu:block/reed_screen_edge"
+  },
+  "render_type": "minecraft:cutout"
+}

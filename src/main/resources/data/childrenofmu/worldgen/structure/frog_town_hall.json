@@ -1,0 +1,11 @@
+{
+  "type": "childrenofmu:ithk_building",
+  "biomes": "#childrenofmu:has_structure/frog_town",
+  "step": "top_layer_modification",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none",
+  "template": "childrenofmu:frog_town_hall",
+  "ground_radius": 0,
+  "follow_slopes": false,
+  "extend_supports": true
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "childrenofmu:block/reed_thatch_slab"
+    },
+    "type=top": {
+      "model": "childrenofmu:block/reed_thatch_slab_top"
+    },
+    "type=double": {
+      "model": "childrenofmu:block/reed_thatch"
+    }
+  }
+}

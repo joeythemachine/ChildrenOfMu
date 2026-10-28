@@ -1,0 +1,92 @@
+[
+[
+[
+1,
+10,
+4
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "true",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+1,
+9,
+4
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "true",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+1,
+8,
+4
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "true",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+1,
+7,
+4
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "true",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+1,
+6,
+4
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "true",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+],
+[
+[
+1,
+6,
+3
+],
+"minecraft:vine",
+{
+"south": "false",
+"east": "true",
+"west": "false",
+"up": "false",
+"north": "false"
+}
+]
+]

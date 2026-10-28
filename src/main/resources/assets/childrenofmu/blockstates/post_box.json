@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "childrenofmu:block/post_box"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+[
+[
+[
+10,
+10,
+6
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "true",
+"east": "false",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+9,
+10,
+7
+],
+"minecraft:vine",
+{
+"north": "true",
+"west": "false",
+"east": "false",
+"up": "true",
+"south": "false"
+}
+],
+[
+[
+10,
+9,
+6
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "true",
+"east": "false",
+"up": "false",
+"south": "false"
+}
+]
+]

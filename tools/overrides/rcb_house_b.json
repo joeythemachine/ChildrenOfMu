@@ -1,0 +1,665 @@
+[
+[
+[
+5,
+5,
+1
+],
+"minecraft:spruce_trapdoor",
+{
+"facing": "north",
+"half": "bottom",
+"open": "true",
+"powered": "false",
+"waterlogged": "false"
+}
+],
+[
+[
+9,
+5,
+1
+],
+"minecraft:spruce_trapdoor",
+{
+"facing": "north",
+"half": "top",
+"open": "true",
+"powered": "false",
+"waterlogged": "false"
+}
+],
+[
+[
+11,
+11,
+2
+],
+"minecraft:lantern",
+{
+"hanging": "true",
+"waterlogged": "false"
+}
+],
+[
+[
+5,
+6,
+1
+],
+"minecraft:spruce_trapdoor",
+{
+"facing": "north",
+"half": "bottom",
+"open": "true",
+"powered": "false",
+"waterlogged": "false"
+}
+],
+[
+[
+11,
+6,
+8
+],
+"minecraft:spruce_trapdoor",
+{
+"facing": "east",
+"half": "bottom",
+"open": "true",
+"powered": "false",
+"waterlogged": "false"
+}
+],
+[
+[
+11,
+6,
+5
+],
+"minecraft:spruce_trapdoor",
+{
+"facing": "east",
+"half": "bottom",
+"open": "true",
+"powered": "false",
+"waterlogged": "false"
+}
+],
+[
+[
+6,
+10,
+11
+],
+"minecraft:spruce_trapdoor",
+{
+"facing": "south",
+"half": "bottom",
+"open": "true",
+"powered": "false",
+"waterlogged": "false"
+}
+],
+[
+[
+9,
+6,
+1
+],
+"minecraft:spruce_trapdoor",
+{
+"facing": "north",
+"half": "bottom",
+"open": "true",
+"powered": "false",
+"waterlogged": "false"
+}
+],
+[
+[
+3,
+11,
+11
+],
+"minecraft:lantern",
+{
+"hanging": "true",
+"waterlogged": "false"
+}
+],
+[
+[
+3,
+11,
+2
+],
+"minecraft:lantern",
+{
+"hanging": "true",
+"waterlogged": "false"
+}
+],
+[
+[
+11,
+11,
+11
+],
+"minecraft:lantern",
+{
+"hanging": "true",
+"waterlogged": "false"
+}
+],
+[
+[
+3,
+11,
+3
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "true",
+"south": "false"
+}
+],
+[
+[
+3,
+11,
+4
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "false",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+],
+[
+[
+4,
+11,
+2
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "false",
+"up": "true",
+"south": "true"
+}
+],
+[
+[
+3,
+10,
+3
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+3,
+9,
+3
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+3,
+10,
+4
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "false",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+],
+[
+[
+3,
+8,
+4
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "false",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+],
+[
+[
+5,
+9,
+2
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "false",
+"up": "false",
+"south": "true"
+}
+],
+[
+[
+3,
+8,
+3
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+3,
+7,
+4
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "false",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+],
+[
+[
+5,
+8,
+2
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "false",
+"up": "false",
+"south": "true"
+}
+],
+[
+[
+4,
+8,
+2
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "false",
+"up": "false",
+"south": "true"
+}
+],
+[
+[
+3,
+7,
+5
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "false",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+],
+[
+[
+4,
+7,
+2
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "false",
+"up": "false",
+"south": "true"
+}
+],
+[
+[
+3,
+7,
+3
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+3,
+6,
+5
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "false",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+],
+[
+[
+4,
+6,
+2
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "false",
+"up": "false",
+"south": "true"
+}
+],
+[
+[
+3,
+6,
+3
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+3,
+6,
+4
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "false",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+],
+[
+[
+4,
+5,
+2
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "false",
+"up": "false",
+"south": "true"
+}
+],
+[
+[
+3,
+5,
+3
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+3,
+5,
+4
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+4,
+4,
+2
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "true",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+],
+[
+[
+3,
+9,
+4
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "false",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+],
+[
+[
+5,
+4,
+2
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "false",
+"up": "true",
+"south": "true"
+}
+],
+[
+[
+3,
+4,
+3
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+5,
+3,
+2
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "false",
+"up": "false",
+"south": "true"
+}
+],
+[
+[
+4,
+3,
+2
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "false",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+],
+[
+[
+3,
+3,
+3
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+3,
+2,
+4
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+3,
+2,
+3
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+4,
+2,
+2
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "false",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+],
+[
+[
+3,
+4,
+4
+],
+"minecraft:vine",
+{
+"north": "false",
+"west": "false",
+"east": "true",
+"up": "false",
+"south": "false"
+}
+],
+[
+[
+4,
+1,
+2
+],
+"minecraft:vine",
+{
+"west": "false",
+"south": "false",
+"north": "false",
+"up": "false",
+"east": "true"
+}
+]
+]
