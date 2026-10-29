@@ -22,10 +22,6 @@
       {
         "set": "childrenofmu:frog_town",
         "chunk_count": 12
-      },
-      {
-        "set": "childrenofmu:amethyst_tower",
-        "chunk_count": 12
       }
     ]
   }

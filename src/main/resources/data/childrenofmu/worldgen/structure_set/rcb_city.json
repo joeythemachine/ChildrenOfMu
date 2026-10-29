@@ -6,19 +6,13 @@
     }
   ],
   "placement": {
-    "type": "childrenofmu:avoiding_spread",
+    "type": "minecraft:random_spread",
     "spacing": 56,
     "separation": 28,
     "salt": 6640217,
-    "avoid": [
-      {
-        "set": "minecraft:villages",
-        "chunk_count": 10
-      },
-      {
-        "set": "childrenofmu:dog_city",
-        "chunk_count": 16
-      }
-    ]
+    "exclusion_zone": {
+      "other_set": "minecraft:villages",
+      "chunk_count": 10
+    }
   }
 }

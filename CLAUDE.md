@@ -84,7 +84,10 @@ Python, no dependencies. Stage the save's region files from the laptop first.
 - Skywalks join opposite upper floors across streets (`TemplateInfo` anchors: plain flat wall both sides, a real
   floor beam at the threshold, no glass). Deck of top slabs; doorways cut through anything (timber frames carry
   block entities).
-- Villages keep apart via structure-set exclusion zones (Ithk villages and traveller huts exclude `rcb_city`).
+- Villages keep apart via structure-set exclusion zones (`childrenofmu:avoiding_spread` with an `avoid` list).
+  **Avoidance must be one-way** (cities > towns > huts/outposts): two sets avoiding each other once recursed forever
+  (StackOverflowError, world wouldn't load). `AvoidingSpreadPlacement.near()` now checks only the other set's grid
+  candidates and never asks it about its own neighbours, but keep the lists one-way anyway.
 
 ## Folk behaviour (entity/folk)
 
