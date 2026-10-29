@@ -62,6 +62,15 @@ public final class ModStructures {
             () -> () -> com.childrenofmu.worldgen.AvoidingSpreadPlacement.CODEC);
 
     /** A covered timber skywalk between two buildings of an RCB City, across a street. */
+    public static final DeferredHolder<StructureType<?>, StructureType<com.childrenofmu.worldgen.DogCityStructure>> DOG_CITY =
+            STRUCTURE_TYPES.register("dog_city", () -> () -> com.childrenofmu.worldgen.DogCityStructure.CODEC);
+
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> DOG_MOAT_PIECE =
+            PIECE_TYPES.register("dog_moat", () -> (StructurePieceType.ContextlessType) com.childrenofmu.worldgen.DogMoatPiece::new);
+
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> DOG_GROUND_PIECE =
+            PIECE_TYPES.register("dog_ground", () -> (StructurePieceType.ContextlessType) com.childrenofmu.worldgen.DogGroundPiece::new);
+
     public static final DeferredHolder<StructurePieceType, StructurePieceType> SKYWALK_PIECE =
             PIECE_TYPES.register("skywalk", () -> (StructurePieceType.ContextlessType) com.childrenofmu.worldgen.SkywalkPiece::new);
 

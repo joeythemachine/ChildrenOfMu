@@ -16,8 +16,14 @@ public enum FolkRace {
             false, true, true),
     /** Bat folk: the roosts above the city. They play jazz all night; the barman sells drinks. Half a player's height. */
     BAT("bat", new String[]{"folk", "flapper", "barman", "jazz", "bookie"}, 0.6F, 7.0F, 0.6F, 0.9F, 12.0, 0.27, false, true, false),
-    /** Dog folk: monks, and feudal-Japanese samurai, archers and stablemasters who trade. 3/4 of a player's height. */
-    DOG("dog", new String[]{"monk", "husky_monk", "samurai", "archer", "stablemaster"}, 0.9F, 7.0F, 0.7F, 1.35F,
+    /**
+     * Dog folk: monks, and feudal-Japanese samurai, archers and stablemasters who trade; Dog City adds its pikemen,
+     * the trades of its four quarters, the Biters of the kennel, and the bandaged one in the dark tower.
+     * 3/4 of a player's height.
+     */
+    DOG("dog", new String[]{"monk", "husky_monk", "samurai", "archer", "stablemaster", "pikeman", "weaver", "dyer",
+            "tailor", "shepherd", "smith", "tanner", "woodcutter", "butcher", "cook", "server", "musician", "teacher",
+            "biter", "bandaged"}, 0.9F, 7.0F, 0.7F, 1.35F,
             20.0, 0.25, true, true, false),
     /** Frog folk: couriers, guards and traders of the swamp towns. A little taller than a block (froglets half that). */
     FROG("frog", new String[]{"jumper", "guard", "potioneer", "coppersmith", "chitinier", "fisher", "treasurer",
@@ -82,14 +88,15 @@ public enum FolkRace {
 
     /** Which of a race's variants a spawn egg or a stray spawn may pick: city officials only come from the city. */
     public boolean randomVariant(String variant) {
-        return !("cop".equals(variant) || "bookie".equals(variant) || "gar".equals(variant) || (this == CAT && "archer".equals(variant))
+        return !("cop".equals(variant) || "bookie".equals(variant) || "gar".equals(variant) || "biter".equals(variant)
+                || "bandaged".equals(variant) || (this == CAT && "archer".equals(variant))
                 || (this == CAT && "guard".equals(variant)));
     }
 
     /** Folk who keep the law or run the bets rather than keep a shop. */
     public boolean tradesAs(String variant) {
         return switch (variant) {
-            case "cop", "bookie", "gar" -> false;
+            case "cop", "bookie", "gar", "biter", "bandaged", "pikeman" -> false;
             case "archer" -> this != CAT && this.trades;
             case "guard" -> this != CAT && this.trades;
             default -> this.trades;
@@ -112,7 +119,18 @@ public enum FolkRace {
             case "treasurer" -> new ItemStack(Items.GOLD_INGOT);
             case "plumber" -> new ItemStack(Items.BUCKET);
             case "guard" -> new ItemStack(this == CAT ? Items.IRON_SWORD : Items.BAMBOO);   // frogs: a blowpipe
-            case "cook" -> new ItemStack(Items.BOWL);
+            case "cook" -> new ItemStack(this == DOG ? Items.IRON_SHOVEL : Items.BOWL);   // dogs: a ladle (of sorts)
+            case "pikeman" -> new ItemStack(Items.TRIDENT);        // a pike
+            case "smith" -> new ItemStack(Items.IRON_PICKAXE);
+            case "woodcutter" -> new ItemStack(Items.IRON_AXE);
+            case "butcher" -> new ItemStack(Items.IRON_AXE);       // a cleaver
+            case "shepherd" -> new ItemStack(Items.SHEARS);
+            case "weaver", "tailor" -> new ItemStack(Items.STRING);
+            case "dyer" -> new ItemStack(Items.BLUE_DYE);
+            case "tanner" -> new ItemStack(Items.LEATHER);
+            case "server" -> new ItemStack(Items.BREAD);
+            case "musician" -> new ItemStack(Items.GOAT_HORN);
+            case "teacher" -> new ItemStack(Items.WRITABLE_BOOK);
             case "fishmonger" -> new ItemStack(Items.COD);
             case "gar" -> new ItemStack(Items.COOKED_SALMON);       // a snack, always
             case "cop" -> new ItemStack(Items.STICK);              // a truncheon

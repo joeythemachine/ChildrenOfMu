@@ -26,13 +26,19 @@
     }
   ],
   "placement": {
-    "type": "minecraft:random_spread",
+    "type": "childrenofmu:avoiding_spread",
     "spacing": 40,
     "separation": 18,
     "salt": 8811027,
-    "exclusion_zone": {
-      "other_set": "childrenofmu:rcb_city",
-      "chunk_count": 8
-    }
+    "avoid": [
+      {
+        "set": "childrenofmu:rcb_city",
+        "chunk_count": 8
+      },
+      {
+        "set": "childrenofmu:dog_city",
+        "chunk_count": 9
+      }
+    ]
   }
 }

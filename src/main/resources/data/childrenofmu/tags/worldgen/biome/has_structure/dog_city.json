@@ -1,0 +1,16 @@
+{
+  "values": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:meadow",
+    "minecraft:taiga",
+    "minecraft:snowy_taiga",
+    "minecraft:snowy_plains",
+    "minecraft:old_growth_pine_taiga",
+    "minecraft:old_growth_spruce_taiga",
+    {
+      "id": "#c:is_taiga",
+      "required": false
+    }
+  ]
+}

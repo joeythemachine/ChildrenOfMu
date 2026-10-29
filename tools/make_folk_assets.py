@@ -138,17 +138,17 @@ def dog_parts():
     return [
         part("head", (0, 8, 0), [box(-5, -9, -4, 10, 9, 8, "head"), box(-2, -4, -7, 4, 3, 3, "snout")]),
         # Spaniel: long floppy ears. Husky: tall pointed ears.
-        part("left_ear", (5, -8, 0), [box(0, 0, -2, 2, 10, 4, "flop")], rot=(0, 0, -8), parent="head", only=["monk"]),
-        part("right_ear", (-5, -8, 0), [box(-2, 0, -2, 2, 10, 4, "flop")], rot=(0, 0, 8), parent="head", only=["monk"]),
+        part("left_ear", (5, -8, 0), [box(0, 0, -2, 2, 10, 4, "flop")], rot=(0, 0, -8), parent="head", only=['monk', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher', 'bandaged']),
+        part("right_ear", (-5, -8, 0), [box(-2, 0, -2, 2, 10, 4, "flop")], rot=(0, 0, 8), parent="head", only=['monk', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher', 'bandaged']),
         part("left_point", (3.5, -9, -0.5), [box(-1.5, -3, -0.5, 3, 3, 1, "ear"), box(-0.5, -5, -0.5, 1, 2, 1, "ear")],
-             rot=(0, 0, 6), parent="head", only=["husky_monk", "archer"]),
+             rot=(0, 0, 6), parent="head", only=['husky_monk', 'archer', 'dyer', 'smith', 'woodcutter', 'butcher', 'musician', 'biter']),
         part("right_point", (-3.5, -9, -0.5), [box(-1.5, -3, -0.5, 3, 3, 1, "ear"), box(-0.5, -5, -0.5, 1, 2, 1, "ear")],
-             rot=(0, 0, -6), parent="head", only=["husky_monk", "archer"]),
+             rot=(0, 0, -6), parent="head", only=['husky_monk', 'archer', 'dyer', 'smith', 'woodcutter', 'butcher', 'musician', 'biter']),
         # Feudal Japan: the samurai's helmet with its gold crest, the stablemaster's straw hat, the archer's quiver.
         part("kabuto", (0, 0, 0), [box(-5.5, -10.5, -4.5, 11, 3, 9, "kabuto"), box(-6, -8.5, 0, 12, 3, 5, "kabuto"),
                                    box(-3, -14, -4.6, 6, 4, 0, "crest")], parent="head", only=["samurai"]),
         part("kasa", (0, 0, 0), [box(-7, -10, -7, 14, 1, 14, "kasa"), box(-4.5, -12, -4.5, 9, 2, 9, "kasa"),
-                                 box(-2, -13, -2, 4, 1, 4, "kasa")], parent="head", only=["stablemaster"]),
+                                 box(-2, -13, -2, 4, 1, 4, "kasa")], parent="head", only=["stablemaster", "pikeman"]),
         part("quiver", (1.5, 0, 2.5), [box(-1.5, -3, 0, 3, 10, 2, "quiver")], rot=(0, 0, 22), parent="body",
              only=["archer"]),
         part("body", (0, 8, 0), [box(-4, 0, -2.5, 8, 9, 5, "body")]),
@@ -159,9 +159,9 @@ def dog_parts():
         part("left_sode", (0, 0, 0), [box(-1.5, -1.5, -2, 4, 4, 4, "sode")], parent="left_arm", only=["samurai"]),
         part("right_leg", (-2, 17, 0), [box(-1.5, 0, -1.5, 3, 7, 3, "leg"), box(-1.5, 6, -2.5, 3, 1, 1, "toes")]),
         part("left_leg", (2, 17, 0), [box(-1.5, 0, -1.5, 3, 7, 3, "leg"), box(-1.5, 6, -2.5, 3, 1, 1, "toes")]),
-        part("tail", (0, 15, 3), [box(-1, -1, 0, 2, 2, 4, "tail")], rot=(-30, 0, 0), only=["monk", "stablemaster"]),
+        part("tail", (0, 15, 3), [box(-1, -1, 0, 2, 2, 4, "tail")], rot=(-30, 0, 0), only=['monk', 'stablemaster', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher', 'bandaged']),
         part("tail_bushy", (0, 15, 3), [box(-1.5, -1.5, 0, 3, 3, 7, "tail")], rot=(-55, 0, 0),
-             only=["husky_monk", "samurai", "archer"]),
+             only=['husky_monk', 'samurai', 'archer', 'dyer', 'smith', 'woodcutter', 'butcher', 'musician', 'pikeman', 'biter']),
     ]
 
 
@@ -590,9 +590,24 @@ def dog_painter(pal):
                 c = pal["lace"]
         return c
 
+    def bandage(x, y, z, face, tx, ty):
+        """Linen wrappings, wound round and round, yellowed and stained here and there."""
+        c = fur((222, 210, 184), tx, ty, 7)
+        band = (y * 1.6 + (x if face in ("north", "south") else z) * 0.45 + 40) % 2.0
+        if band < 0.32:
+            c = shade(c, -34)                                                     # the edge of each turn
+        if noise("stain", tx // 3, ty // 3) < 0.07:
+            c = mix(c, (150, 120, 80), 0.45)
+        return c
+
     def paint(p, b, face, tx, ty, pt, n):
         x, y, z = pt
         tag = b["tag"]
+        if pal.get("bandaged"):
+            c = bandage(x, y, z, face, tx, ty)
+            if tag == "head" and face == "north" and -6.0 < y < -5.0 and 1.2 < abs(x) < 3.4:
+                c = (20, 14, 12)                                                  # a slit for each eye
+            return rgba(shade(c, FACE_LIGHT[face]))
         coat = fur(pal["fur"], tx, ty, 9)
         if pal.get("brindle") and noise("brindle", int((y + x * 0.4 + 20) * 1.5), face) < 0.35:
             coat = fur(shade(pal["fur"], -35), tx, ty, 6)
@@ -647,6 +662,21 @@ def dog_painter(pal):
                         c = (240, 236, 228)                                        # the white of the eye
                 if -7.2 < y < -6.4 and abs(ex) < 1.2:
                     c = shade(pal["fur"], -30)                                     # brow
+        elif pal.get("feral") and tag in ("body", "arm", "skirt"):
+            # A Biter: no clothes but a ragged loincloth and a spiked collar; old scars through the fur.
+            c = coat
+            if tag == "body" and y < 1.3:
+                c = (46, 32, 22)
+                if face in ("north", "south", "east", "west") and int((x + z + 20) * 1.5) % 3 == 0 and y < 0.7:
+                    c = (200, 200, 206)                                           # the collar's studs
+            elif tag in ("body", "arm") and abs((x * 0.8 + y + z * 0.3) % 3.1 - 1.5) < 0.12 and noise("scar", int(y), face) < 0.5:
+                c = (196, 120, 116)                                               # a scar
+            elif tag == "skirt":
+                c = fur((70, 52, 36), tx, ty, 10)
+                if y > 3.2 and noise("rag", tx, face) < 0.55:
+                    return CLEAR                                                  # a torn hem
+            elif tag == "arm" and y >= 5.4:
+                c = shade(coat, -20)
         elif tag == "body" and pal.get("armor"):
             c = plates(pal["armor"], y, x, tx, ty)
             if 6.0 < y < 7.4:
@@ -1161,6 +1191,40 @@ RACES = {
         "stablemaster": dog_painter({"kind": "husky", "fur": (96, 66, 42), "light": (176, 146, 110), "brindle": True,
                                      "pink": (200, 150, 140), "robe": (120, 96, 60), "trim": (70, 52, 34),
                                      "eye": (70, 44, 26), "hakama": (62, 80, 54)}),
+        # ---- Dog City: the trades of the quarters, the pikemen, the Biters, and the one in the tower.
+        "weaver": dog_painter({"kind": "spaniel", "fur": (220, 196, 150), "light": (244, 232, 210), "pink": (214, 150, 146),
+                               "robe": (110, 140, 190), "trim": (238, 234, 224), "eye": (90, 60, 34)}),
+        "dyer": dog_painter({"kind": "husky", "fur": (200, 200, 204), "light": (240, 240, 240), "pink": (210, 150, 150),
+                             "robe": (40, 50, 110), "trim": (190, 60, 60), "eye": (90, 140, 200), "hakama": (40, 50, 110)}),
+        "tailor": dog_painter({"kind": "spaniel", "fur": (40, 36, 34), "light": (236, 230, 220), "pink": (200, 140, 140),
+                               "robe": (150, 40, 60), "trim": (220, 180, 70), "eye": (110, 70, 34)}),
+        "shepherd": dog_painter({"kind": "spaniel", "fur": (150, 104, 66), "light": (226, 206, 170), "brindle": True,
+                                 "pink": (210, 150, 140), "robe": (120, 140, 80), "trim": (232, 222, 196),
+                                 "eye": (80, 54, 30)}),
+        "smith": dog_painter({"kind": "husky", "fur": (90, 80, 72), "light": (190, 180, 170), "pink": (200, 150, 140),
+                              "robe": (60, 56, 52), "trim": (150, 90, 40), "eye": (200, 140, 40), "hakama": (50, 46, 44)}),
+        "tanner": dog_painter({"kind": "spaniel", "fur": (150, 96, 60), "light": (214, 176, 136), "pink": (210, 150, 140),
+                               "robe": (140, 100, 60), "trim": (90, 60, 36), "eye": (70, 44, 26)}),
+        "woodcutter": dog_painter({"kind": "husky", "fur": (180, 110, 60), "light": (240, 226, 206), "pink": (214, 154, 144),
+                                   "robe": (70, 96, 60), "trim": (120, 90, 50), "eye": (70, 44, 26), "hakama": (90, 70, 46)}),
+        "butcher": dog_painter({"kind": "husky", "fur": (232, 228, 222), "light": (246, 244, 240), "pink": (220, 160, 150),
+                                "robe": (236, 232, 226), "trim": (170, 40, 40), "eye": (60, 90, 150), "hakama": (60, 60, 66)}),
+        "cook": dog_painter({"kind": "spaniel", "fur": (200, 150, 90), "light": (240, 220, 180), "pink": (214, 150, 146),
+                             "robe": (236, 232, 222), "trim": (60, 60, 70), "eye": (90, 60, 34)}),
+        "server": dog_painter({"kind": "spaniel", "fur": (170, 120, 80), "light": (228, 200, 160), "pink": (214, 150, 146),
+                               "robe": (190, 60, 50), "trim": (236, 230, 210), "eye": (90, 60, 34)}),
+        "musician": dog_painter({"kind": "husky", "fur": (60, 50, 46), "light": (210, 196, 176), "pink": (200, 150, 140),
+                                 "robe": (90, 60, 130), "trim": (230, 190, 70), "eye": (220, 170, 60), "hakama": (40, 30, 60)}),
+        "teacher": dog_painter({"kind": "spaniel", "fur": (110, 80, 60), "light": (200, 176, 146), "pink": (204, 146, 140),
+                                "robe": (50, 80, 60), "trim": (230, 220, 190), "eye": (70, 44, 26)}),
+        "pikeman": dog_painter({"kind": "husky", "fur": (200, 170, 130), "light": (244, 232, 214), "pink": (214, 154, 144),
+                                "robe": (40, 60, 110), "trim": (220, 220, 210), "eye": (80, 54, 30),
+                                "armor": (40, 60, 110), "lace": (200, 200, 206), "hakama": (36, 40, 60)}),
+        "biter": dog_painter({"kind": "husky", "fur": (52, 46, 44), "light": (120, 110, 100), "pink": (170, 100, 100),
+                              "robe": (52, 46, 44), "trim": (46, 32, 22), "eye": (226, 40, 30), "feral": True}),
+        "bandaged": dog_painter({"kind": "spaniel", "fur": (222, 210, 184), "light": (222, 210, 184),
+                                 "pink": (222, 210, 184), "robe": (222, 210, 184), "trim": (222, 210, 184),
+                                 "eye": (20, 14, 12), "bandaged": True}),
     }),
     "frog": (frog_parts, {
         "jumper": frog_painter({"kind": "jumper", "green": (66, 160, 52), "light": (150, 196, 100), "vest": (140, 100, 62),

@@ -95,3 +95,19 @@ Python, no dependencies. Stage the save's region files from the laptop first.
 - Pit fights (`FolkPit`): bookie finds the pit by its sand, calls bouts when a player is within 32 blocks, bets by
   clickable chat stakes, pays double; anyone not fighting is lifted out of the pit onto the stands.
 - `unpit()` lifts folk out of holes they're stuck in; `unjam()` frees folk stuck on ladders.
+
+## Dog City (DC)
+
+- Owner's design: an 8-point star fort (~170 blocks) of crenellated stone brick (`CityWallPiece` style 1: plain
+  stone bricks, no vines) with a water moat (`DogMoatPiece`) and a bridge to the gate in the south tip. Inside: four
+  military towers (bow, sword, pike, and the Biters' kennel), four quarters of four workshops each (cloth; smithy/
+  tannery/livery/sawmill; meat; mess/music/school/teahouse), the Keep on a raised plinth (monks, courtyard), and the
+  forbidden dark tower in the middle (spiral stair, bandaged dog kneeling on a mat at the top).
+- `DogCityStructure` lays it out in plan coordinates (gate to +z) and turns the whole city by a random quarter turn
+  (`turn()`); `DogGroundPiece.road()` is the road plan. Buildings are axis-aligned squares.
+- Templates: `tools/make_dog_city.py` + `tools/dog_build.py` (`dc_*.nbt`). Look them over without the game:
+  `tools/worldcheck/render_template.py <nbt> <png> [scale] [view]` (env `CUT_Y` to see inside).
+- Every dog has a bed except the Biters. Dog variants for the trades, plus `pikeman`, `biter`, `bandaged`
+  (not random, don't trade).
+- Round 2 (to do): guards warn then attack near/in the dark tower; Biters stay in the kennel; killing the bandaged
+  dog: scream, Biters released, every dog turns rabid, permanently (world saved data).

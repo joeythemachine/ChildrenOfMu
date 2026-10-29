@@ -33,9 +33,15 @@ public class CityWallPiece extends StructurePiece {
     private final int x0, z0, y0, x1, z1, y1;
     /** Where towers and gatehouses stand (minX, minZ, maxX, maxZ each): the wall leaves them be, and opens into them. */
     private final int[] keepOut;
+    /** 0: RCB City's old weathered wall (moss, cracks, vines). 1: Dog City's: plain stone brick, kept in good repair. */
+    private final int style;
 
     /** y0, y1: the surface height (first air above ground) at each end. */
     public CityWallPiece(int x0, int z0, int y0, int x1, int z1, int y1, int[] keepOut) {
+        this(x0, z0, y0, x1, z1, y1, keepOut, 0);
+    }
+
+    public CityWallPiece(int x0, int z0, int y0, int x1, int z1, int y1, int[] keepOut, int style) {
         super(ModStructures.CITY_WALL_PIECE.get(), 0, new BoundingBox(Math.min(x0, x1) - 5, Math.min(y0, y1) - 8,
                 Math.min(z0, z1) - 5, Math.max(x0, x1) + 5, Math.max(y0, y1) + HEIGHT + 4, Math.max(z0, z1) + 5));
         this.x0 = x0;
@@ -45,6 +51,7 @@ public class CityWallPiece extends StructurePiece {
         this.z1 = z1;
         this.y1 = y1;
         this.keepOut = keepOut;
+        this.style = style;
     }
 
     public CityWallPiece(CompoundTag tag) {
@@ -56,6 +63,7 @@ public class CityWallPiece extends StructurePiece {
         this.z1 = tag.getInt("Z1");
         this.y1 = tag.getInt("Y1");
         this.keepOut = tag.getIntArray("Keep");
+        this.style = tag.getInt("Style");
     }
 
     @Override
@@ -67,6 +75,12 @@ public class CityWallPiece extends StructurePiece {
         tag.putInt("Z1", this.z1);
         tag.putInt("Y1", this.y1);
         tag.putIntArray("Keep", this.keepOut);
+        tag.putInt("Style", this.style);
+    }
+
+    /** This wall's stone: weathered and patched for RCB City, plain stone brick for Dog City. */
+    private BlockState stoneFor(RandomSource r) {
+        return this.style == 1 ? Blocks.STONE_BRICKS.defaultBlockState() : stone(r);
     }
 
     static BlockState stone(RandomSource r) {
@@ -560,11 +574,11 @@ public class CityWallPiece extends StructurePiece {
                     }
                     RandomSource r = RandomSource.create(Mth.getSeed(cx, yy, cz));
                     if (yy == ground + HEIGHT - 1 && !outer && (ix == 0 || iz == 0)) {
-                        level.setBlock(p, rampStair(t, yy, Blocks.STONE_BRICK_STAIRS.defaultBlockState(), stone(r)), 2);
+                        level.setBlock(p, rampStair(t, yy, Blocks.STONE_BRICK_STAIRS.defaultBlockState(), stoneFor(r)), 2);
                     } else if (yy < ground + HEIGHT) {
-                        level.setBlock(p, stone(r), 2);
+                        level.setBlock(p, stoneFor(r), 2);
                     } else if (outer && Math.floorMod(t, 2) == 0 && !nearKept(cx, cz, 2)) {
-                        level.setBlock(p, stone(r), 2);                    // a merlon (none by a tower's doorway)
+                        level.setBlock(p, stoneFor(r), 2);                 // a merlon (none by a tower's doorway)
                     } else if (!level.getBlockState(p).isAir()) {
                         level.setBlock(p, Blocks.AIR.defaultBlockState(), 2);
                     }
@@ -596,7 +610,7 @@ public class CityWallPiece extends StructurePiece {
                     }
                 }
                 RandomSource r = RandomSource.create(Mth.getSeed(cx, 11, cz));
-                if (outer && r.nextFloat() < 0.3F) {
+                if (outer && this.style == 0 && r.nextFloat() < 0.3F) {          // (no ivy on a well-kept wall)
                     int h = 2 + r.nextInt(4);
                     for (int yy = ground + HEIGHT - 1; yy > ground + HEIGHT - 1 - h; yy--) {
                         BlockPos v = new BlockPos(cx, yy, cz).relative(out);

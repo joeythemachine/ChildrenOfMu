@@ -6,9 +6,22 @@
       "other_set": "minecraft:villages"
     },
     "avoid": [
-      {"set": "childrenofmu:rcb_city", "chunk_count": 10},
-      {"set": "childrenofmu:frog_town", "chunk_count": 8},
-      {"set": "childrenofmu:amethyst_tower", "chunk_count": 8}
+      {
+        "set": "childrenofmu:rcb_city",
+        "chunk_count": 10
+      },
+      {
+        "set": "childrenofmu:frog_town",
+        "chunk_count": 8
+      },
+      {
+        "set": "childrenofmu:amethyst_tower",
+        "chunk_count": 8
+      },
+      {
+        "set": "childrenofmu:dog_city",
+        "chunk_count": 12
+      }
     ],
     "frequency": 0.2,
     "frequency_reduction_method": "legacy_type_1",

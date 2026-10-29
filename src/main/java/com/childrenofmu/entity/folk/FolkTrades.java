@@ -254,6 +254,66 @@ public final class FolkTrades {
                 sells("minecraft:hay_block", 2, 3), costs("minecraft:golden_carrot", 3, 2, 3),
                 buys("minecraft:wheat", 18, 24)));
 
+        // ---- Dog City's quarters: cloth (the city's great export), the yards, the meat halls, the mess and school
+        POOLS.put("dog_weaver", List.of(
+                sells("minecraft:white_wool", 4, 6), costs("minecraft:white_carpet", 4, 1, 2),
+                costs("minecraft:loom", 1, 2, 3), costs("minecraft:white_banner", 1, 2, 3),
+                buys("minecraft:string", 16, 22), buys("minecraft:white_wool", 12, 16)));
+        POOLS.put("dog_dyer", List.of(
+                sells("minecraft:blue_dye", 4, 6), sells("minecraft:red_dye", 4, 6), sells("minecraft:yellow_dye", 4, 6),
+                sells("minecraft:black_dye", 4, 6), costs("minecraft:cyan_wool", 4, 1, 2),
+                costs("minecraft:light_blue_wool", 4, 1, 2), buys("minecraft:lapis_lazuli", 10, 14),
+                buys("minecraft:poppy", 16, 22), buys("minecraft:cactus", 12, 16)));
+        POOLS.put("dog_tailor", List.of(
+                costs("minecraft:leather_helmet", 1, 2, 3), costs("minecraft:leather_chestplate", 1, 4, 5),
+                costs("minecraft:leather_leggings", 1, 3, 4), costs("minecraft:leather_boots", 1, 2, 3),
+                costs("minecraft:white_banner", 1, 2, 3), costs("minecraft:blue_bed", 1, 2, 3),
+                buys("minecraft:white_wool", 12, 16), buys("minecraft:leather", 8, 10)));
+        POOLS.put("dog_shepherd", List.of(
+                sells("minecraft:white_wool", 5, 8), costs("minecraft:shears", 1, 2, 3),
+                costs("minecraft:sheep_spawn_egg", 1, 14, 18), costs("minecraft:mutton", 6, 1, 2),
+                buys("minecraft:wheat", 18, 24)));
+        POOLS.put("dog_smith", List.of(
+                costs("minecraft:iron_sword", 1, 6, 9), costs("minecraft:iron_axe", 1, 4, 6),
+                costs("minecraft:iron_pickaxe", 1, 5, 7), costs("minecraft:iron_helmet", 1, 5, 7),
+                costs("minecraft:chainmail_chestplate", 1, 8, 11), costs("minecraft:shield", 1, 4, 6),
+                costs("minecraft:lantern", 2, 1, 2), costs("minecraft:chain", 4, 1, 2),
+                buys("minecraft:coal", 15, 20), buys("minecraft:iron_ingot", 6, 8)));
+        POOLS.put("dog_tanner", List.of(
+                sells("minecraft:leather", 3, 4), costs("minecraft:saddle", 1, 6, 8),
+                costs("minecraft:leather_horse_armor", 1, 4, 6), costs("minecraft:item_frame", 2, 1, 2),
+                costs("minecraft:bundle", 1, 3, 4), buys("minecraft:rabbit_hide", 9, 12),
+                buys("minecraft:rotten_flesh", 30, 36)));
+        POOLS.put("dog_woodcutter", List.of(
+                sells("minecraft:spruce_log", 6, 8), sells("minecraft:dark_oak_log", 6, 8),
+                sells("minecraft:spruce_planks", 16, 20), costs("minecraft:iron_axe", 1, 4, 6),
+                costs("minecraft:dark_oak_sapling", 4, 1, 2), buys("minecraft:stick", 32, 40)));
+        POOLS.put("dog_butcher", List.of(
+                sells("minecraft:cooked_beef", 4, 6), sells("minecraft:cooked_porkchop", 4, 6),
+                sells("minecraft:cooked_mutton", 4, 6), costs("farmersdelight:minced_beef", 4, 1, 2),
+                costs("farmersdelight:ham", 1, 3, 4), buys("minecraft:beef", 12, 16),
+                buys("minecraft:porkchop", 12, 16), buys("minecraft:coal", 15, 20)));
+        POOLS.put("dog_cook", List.of(
+                sells("minecraft:bread", 4, 6), sells("minecraft:mushroom_stew", 1, 1),
+                sells("minecraft:rabbit_stew", 1, 1), costs("farmersdelight:beef_stew", 1, 2, 3),
+                costs("farmersdelight:fried_rice", 1, 2, 3), costs("farmersdelight:dumplings", 2, 2, 3),
+                buys("minecraft:carrot", 20, 24), buys("minecraft:potato", 20, 24)));
+        POOLS.put("dog_server", List.of(
+                sells("minecraft:bread", 4, 6), sells("minecraft:baked_potato", 6, 8),
+                sells("minecraft:pumpkin_pie", 2, 3), costs("minecraft:cake", 1, 2, 3),
+                costs("farmersdelight:cabbage_rolls", 2, 2, 3), sells("minecraft:milk_bucket", 1, 1),
+                buys("minecraft:sweet_berries", 20, 24)));
+        POOLS.put("dog_musician", List.of(
+                costs("minecraft:note_block", 1, 2, 3), costs("minecraft:jukebox", 1, 8, 10),
+                costs("minecraft:music_disc_cat", 1, 10, 14), costs("minecraft:music_disc_far", 1, 10, 14),
+                costs("minecraft:goat_horn", 1, 6, 8), costs("minecraft:bell", 1, 8, 10),
+                buys("minecraft:bamboo", 16, 24)));
+        POOLS.put("dog_teacher", List.of(
+                costs("minecraft:book", 1, 1, 2), costs("minecraft:writable_book", 1, 2, 3),
+                costs("minecraft:map", 1, 2, 3), costs("minecraft:compass", 1, 3, 4),
+                costs("minecraft:clock", 1, 4, 5), costs("minecraft:bookshelf", 1, 3, 4),
+                buys("minecraft:paper", 20, 24), buys("minecraft:ink_sac", 6, 8)));
+
         // ---- Frog traders
         POOLS.put("frog_potioneer", List.of(
                 costs("potion:minecraft:leaping", 1, 2, 4), costs("potion:minecraft:swiftness", 1, 3, 4),
