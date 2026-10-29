@@ -37,8 +37,9 @@ missing, or clone from GitHub once that's set up).
 2. Templates: `cd tools && python3 make_rcb_city.py` (and the other `make_*.py`) rebuild `.nbt` structures.
 3. Stage changed files under `/mnt/user-data/outputs/cofm_fixN/...` and commit them to
    `C:\MCModding\ChildrenOfMu\...` with the device commit tool (force, at most 50 files per call).
-4. List the laptop folders and check the sizes match. (PNGs come out re-compressed through the outputs folder, so
-   compare a PNG's size with its *staged* copy, or its pixels, not the mirror's file.)
+4. List the laptop folders and check the sizes match. (PNGs get re-compressed on the way (staging and/or the commit
+   tool), so their sizes won't match; checked once that the pixels are identical. Texture files sit too deep to
+   stage back, so for PNGs check the write succeeded and the mtime is fresh.)
 
 ## Templates and the owner's edits
 

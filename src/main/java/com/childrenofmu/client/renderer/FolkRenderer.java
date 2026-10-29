@@ -24,7 +24,9 @@ public class FolkRenderer extends MobRenderer<FolkEntity, FolkModel> {
     protected void scale(FolkEntity entity, PoseStack poseStack, float partialTick) {
         float s = this.race.modelScale() * com.childrenofmu.entity.folk.FolkRace.variantScale(entity.getVariantName())
                 * entity.getSize();
-        poseStack.scale(s, s, s);
+        // The High Guard is drawn leaner than other dogs (narrower and slimmer for his height): tall and fierce.
+        float lean = "high_guard".equals(entity.getVariantName()) ? 0.82F : 1.0F;
+        poseStack.scale(s * lean, s, s * lean);
     }
 
     /** A bat asleep in its roost hangs upside down from its post. */

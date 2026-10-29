@@ -160,8 +160,9 @@ def dog_parts():
         part("left_sode", (0, 0, 0), [box(-1.5, -1.5, -2, 4, 4, 4, "sode")], parent="left_arm",
              only=["samurai", "high_guard"]),
         # The High Guard of the dark tower: a sashimono on his back, a pole and crossbar flying the tower's banner.
-        part("sashimono", (0, 0, 0), [box(-0.5, -15, 3, 1, 22, 1, "pole"), box(-3.5, -15, 3, 7, 1, 1, "pole"),
-                                      box(-3, -14, 4, 6, 10, 0, "flag")], parent="body", only=["high_guard"]),
+        # (Stood clear of the head's back, the flag a thin board, not a zero-thick plane: no z-fighting.)
+        part("sashimono", (0, 0, 0), [box(-0.5, -15, 4.5, 1, 22, 1, "pole"), box(-3.5, -15, 4.5, 7, 1, 1, "pole"),
+                                      box(-3, -14, 5.5, 6, 10, 1, "flag")], parent="body", only=["high_guard"]),
         part("right_leg", (-2, 17, 0), [box(-1.5, 0, -1.5, 3, 7, 3, "leg"), box(-1.5, 6, -2.5, 3, 1, 1, "toes")]),
         part("left_leg", (2, 17, 0), [box(-1.5, 0, -1.5, 3, 7, 3, "leg"), box(-1.5, 6, -2.5, 3, 1, 1, "toes")]),
         part("tail", (0, 15, 3), [box(-1, -1, 0, 2, 2, 4, "tail")], rot=(-30, 0, 0), only=['monk', 'stablemaster', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher', 'bandaged']),
@@ -697,6 +698,16 @@ def dog_painter(pal):
                 if y > -3.6 and abs(x) < 3.4:
                     c = fur(pal["light"], tx, ty, 5)
                 ex = abs(x) - 2.5
+                if pal.get("fierce") and abs(ex) < 1.3:
+                    # Narrow, hard eyes under a brow that bears down toward the nose: a wolf's squint.
+                    lid = -5.4 - 0.35 * ex                                         # lower at the inner corner
+                    if lid < y < -4.5:
+                        c = pal["eye"]
+                        if abs(ex) < 0.4:
+                            c = (20, 14, 10)                                       # pupil
+                    elif lid - 1.0 < y <= lid:
+                        c = shade(pal["fur"], -40)                                 # the brow
+                    return rgba(shade(c, FACE_LIGHT[face]))
                 if -6.4 < y < -4.2 and abs(ex) < 1.1:
                     c = pal["eye"]
                     if abs(ex) < 0.45 and y > -5.6:
@@ -1265,9 +1276,9 @@ RACES = {
                                 "armor": (40, 60, 110), "lace": (200, 200, 206), "hakama": (36, 40, 60)}),
         "high_guard": dog_painter({"kind": "husky", "fur": (54, 40, 32), "light": (186, 136, 80),
                                    "pink": (170, 120, 110), "robe": (52, 52, 58), "trim": (140, 30, 30),
-                                   "eye": (150, 96, 40), "armor": (50, 50, 56), "lace": (176, 140, 70),
+                                   "eye": (214, 150, 36), "armor": (50, 50, 56), "lace": (176, 140, 70),
                                    "hakama": (42, 40, 44), "cloth": (226, 214, 188), "emblem": (34, 32, 36),
-                                   "templar": True}),
+                                   "templar": True, "fierce": True}),
         "biter": dog_painter({"kind": "husky", "fur": (52, 46, 44), "light": (120, 110, 100), "pink": (170, 100, 100),
                               "robe": (52, 46, 44), "trim": (46, 32, 22), "eye": (226, 40, 30), "feral": True}),
         "bandaged": dog_painter({"kind": "spaniel", "fur": (222, 210, 184), "light": (222, 210, 184),
