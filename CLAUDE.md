@@ -146,6 +146,11 @@ Python, no dependencies. Stage the save's region files from the laptop first.
   climb a riser), a water hole per field, the road out from the bridge level, a stone rim round the cleared ground
   and the farmsteads; everything above the fields is cleared (no floating rocks). Four `dc_farmstead`s in the outer
   corners (plan +-82): tool hut + bed + stablemaster, paddock with cows, horses, chickens.
+- **Lawns inside the walls** (`DogGroundPiece`, before the roads): every unbuilt cell outside the Keep gets pits and
+  cave mouths filled with dirt, a grass surface, and anything loose above cleared (hanging leaves, bushes, rocks,
+  exposed stone/ore). Then ~50 trees of the local kind (spruce in taiga/snow, oak and birch elsewhere), 8-17 high,
+  placed from the plan (`tree()`, 7-block grid, clear of roads, buildings and the wall) so chunks agree; **no leaves
+  in a tree's lowest 6 blocks** (owner: clearance).
 - **Dog folk are strictly carnivorous**: no bread, vegetables, cake or fruit in their trades, gifts or stores
   (wheat is for the animals).
 - **Soldiers (samurai, pikemen, bowmen) don't trade.** With the monks' trust a player can recruit up to 2
