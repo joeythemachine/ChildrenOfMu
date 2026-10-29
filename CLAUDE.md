@@ -146,7 +146,9 @@ Python, no dependencies. Stage the save's region files from the laptop first.
   meditation room and abbot's cell (1 bed) in the corners. Courtyard arches open into library, council, prayer hall.
   10 beds = the Keep's 10 dogs. Keep beds against walls, never across a walking line.
 - Dark tower: solid base, door 4 up in a blackstone portal, a stair up to it in the Keep template; the spiral turns
-  on flat corner landings (corner *stairs* in a 1-wide well became outer-shaped lips and couldn't be climbed).
+  on flat corner landings, and starts one cell in from the door. **Never put a step right behind a door**: stepping
+  up there lifts the player's head into the doorway's lintel/bars while they're still half in it (it blocked the
+  tower twice). Check climbs with a body-clearance walk over both the cell left and the cell entered.
 - **Outside the walls** (`DogFarmPiece`, after the moat): wheat terraces following the star outward, a step down
   every 7 blocks (max 3), risers faced in stone brick with andesite kerbs, a 9-grid of paths (stair steps where they
   climb a riser), a water hole per field, the road out from the bridge level, a stone rim round the cleared ground

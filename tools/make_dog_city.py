@@ -876,7 +876,9 @@ def dark_tower():
     while level < T + 1:
         x, z = ring[i % len(ring)]
         nx, nz = ring[(i + 1) % len(ring)]
-        if (x, z) in corners:
+        if i == 0:
+            pass        # a flat landing just inside the door: a step here would lift your head into the doorway's lintel
+        elif (x, z) in corners:
             B.put(x, level - 1, z, DARK[1])                                       # a landing, level with the last step
         else:
             B.stair(x, level, z, DARK[0], dirs[(nx - x, nz - z)])
