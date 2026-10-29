@@ -174,6 +174,12 @@ Python, no dependencies. Stage the save's region files from the laptop first.
 - **No lava, no holes**: `CityTerrainPiece` seals lava near the surface across any city's ring and plots;
   `DogGroundPiece` also seals it under the lawns and fills pits right up to the Keep's own footprint (the ring road
   round the Keep had holes when the skip went too wide).
+- **Paintings** (`tools/make_paintings.py`): the owner's images in `CoM Reference Images/Paintings` (city initials
+  first) become a 32 px/block texture + `painting_variant` json; listed in `PAINTINGS` with their size in blocks. None
+  are in `minecraft:placeable` (only templates hang them: `B.painting(x, y, z, facing, id, w, h)`, bottom-middle cell,
+  solid wall behind, no glass). **DC: paintings almost only in the Keep, never outdoors in any town unless told.**
+  The Whipped (5x4) is unique: over the prayer hall's altar, candles before it; never in dwellings. The bell moved to
+  the courtyard arch to keep clear of it.
 - Every dog has a bed except the Biters. Dog variants for the trades, plus `pikeman`, `biter`, `bandaged`
   (not random, don't trade).
 - Round 2 (to do): guards (High Guards) warn then attack near/in the dark tower; Biters stay in the kennel; killing the bandaged

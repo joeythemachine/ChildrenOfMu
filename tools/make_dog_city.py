@@ -597,14 +597,20 @@ def keep():
         for z in (HI1 + 2, HI1 + 4):
             if (x - HI0) % 3 != 0:
                 B.put(x, hall_y, z, "minecraft:light_gray_carpet")
+    # The altar along the back wall, a row of lit candles on it, and over it The Whipped: the one painting the dogs
+    # keep, here and nowhere else (owner: a reminder, where the knowledge matters most). Solid wall behind it.
     for x in range(KC - 3, KC + 4):
-        B.put(x, hall_y, HO1 - 1, "minecraft:polished_andesite_slab", {"type": "bottom", "waterlogged": "false"})
-    B.put(KC, hall_y, HO1 - 1, "minecraft:polished_andesite")
-    B.put(KC, hall_y + 1, HO1 - 1, "minecraft:candle", {"candles": "3", "lit": "true", "waterlogged": "false"})
-    for x in (KC - 2, KC + 2):
         B.put(x, hall_y, HO1 - 1, "minecraft:polished_andesite")
-        B.put(x, hall_y + 1, HO1 - 1, "minecraft:candle", {"candles": "2", "lit": "true", "waterlogged": "false"})
-    B.put(KC, top, HO1 - 2, "minecraft:bell", {"attachment": "ceiling", "facing": "north", "powered": "false"})
+        n = 4 if x == KC else 3 if abs(x - KC) < 3 else 2
+        B.put(x, hall_y + 1, HO1 - 1, "minecraft:candle", {"candles": str(n), "lit": "true", "waterlogged": "false"})
+    for x in range(KC - 2, KC + 3):
+        for y in range(hall_y + 1, top + 1):
+            B.put(x, y, HO1, STONE)
+    B.painting(KC, hall_y + 2, HO1 - 1, "north", "dc_the_whipped", 5, 4)
+    for x in (KC - 4, KC + 4):
+        B.put(x, hall_y, HO1 - 1, "minecraft:white_candle", {"candles": "4", "lit": "true", "waterlogged": "false"})
+    # The bell hangs at the courtyard arch, clear of the painting.
+    B.put(KC, top, HI1 + 1, "minecraft:bell", {"attachment": "ceiling", "facing": "north", "powered": "false"})
     for x in (17, 31):
         lamp(x, HI1 + 3)
 

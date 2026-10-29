@@ -236,6 +236,18 @@ class DogBuilder(RCBBuilder):
         data.update(nbt)
         self.entities.append((x + 0.5, y + 0.05, z + 0.5, data))
 
+    def painting(self, x, y, z, facing, variant, w, h):
+        """A painting (a variant from make_paintings.py, w x h blocks) hanging on the wall behind (x, z), facing out of
+        it. (x, y, z) is its bottom-middle cell in front of the wall; for an even width, the cell left of the middle as
+        you look at it. The wall behind must be solid all the way across (no glass): it falls off otherwise."""
+        # Minecraft centres a painting on its anchor cell, shifted half a block up (even height) and half a block to the
+        # viewer's right (even width). So the anchor is the given middle cell, raised to the middle row (lower of two).
+        ax, ay, az = x, y + (h - 1) // 2, z
+        data = {"id": "minecraft:painting", "variant": f"childrenofmu:{variant}",
+                "facing": Byte({"south": 0, "west": 1, "north": 2, "east": 3}[facing]),
+                "TileX": ax, "TileY": ay, "TileZ": az}
+        self.entities.append((ax + 0.5, ay + 0.5, az + 0.5, data))
+
     def stone_lantern(self, x, y, z):
         """A garden lantern of stone: a post, a lantern, a cap."""
         self.put(x, y, z, "minecraft:stone_brick_wall", {"up": "true", "north": "none", "south": "none",
