@@ -3,7 +3,7 @@ R=sys.argv[1]
 starts=None
 for f in glob.glob(R+"r.*.mca"):
     for c in anvil.chunks(f):
-        s=c.get('structures',{}).get('starts',{}).get('childrenofmu:rcb_city')
+        s=c.get('structures',{}).get('starts',{}).get('childrenofmu:'+(sys.argv[3] if len(sys.argv)>3 else 'rcb_city'))
         if s and 'Children' in s: starts=s['Children'];break
     if starts: break
 walls=[p for p in starts if p['id']=='childrenofmu:city_wall']

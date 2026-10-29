@@ -116,6 +116,14 @@ Python, no dependencies. Stage the save's region files from the laptop first.
   (`turn()`); `DogGroundPiece.road()` is the road plan. Buildings are axis-aligned squares.
 - Templates: `tools/make_dog_city.py` + `tools/dog_build.py` (`dc_*.nbt`). Look them over without the game:
   `tools/worldcheck/render_template.py <nbt> <png> [scale] [view]` (env `CUT_Y` to see inside).
+- Wall corners (star tips/notches) and where the diagonals meet the gatehouse: `DogCornerPiece` lays solid stone
+  landings level with the walk after the wall runs (the runs' boards/rails crossed and left pits there).
+- Quarter colour themes (`THEMES` in `dog_build.py`): cloth = dark prismarine roofs, blue/light blue/white;
+  yards = brick, brown/orange/black; meat = red nether brick, red/gray/white; hall = oxidized copper,
+  green/yellow/lime. They set roofs, bedroom rugs, beds, front banners, cloths. Military: gray + tower colour.
+- **Every bedroom gets a carpet rug** (`B.rug`). **Never a ladder over a window** (`unblock_windows()` in
+  `DogBuilder.finish` turns glass behind a ladder into wall). Fire under a pot is sunk into the floor.
+- `tools/worldcheck/load.py <region dir> <out.pkl> dog_city` snapshots Dog City (third arg = structure name).
 - Every dog has a bed except the Biters. Dog variants for the trades, plus `pikeman`, `biter`, `bandaged`
   (not random, don't trade).
 - Round 2 (to do): guards warn then attack near/in the dark tower; Biters stay in the kennel; killing the bandaged

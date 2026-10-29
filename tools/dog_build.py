@@ -24,6 +24,20 @@ TILE = ("minecraft:deepslate_tile_stairs", "minecraft:deepslate_tiles", "minecra
 DARK = ("minecraft:polished_blackstone_brick_stairs", "minecraft:polished_blackstone_bricks",
         "minecraft:polished_blackstone_brick_slab")
 TRIM_STAIRS = "minecraft:dark_oak_stairs"
+
+# Each quarter's colours: its roof, and two or three dyes that go with it (carpets, beds, banners, cloths).
+THEMES = {
+    "cloth": dict(roof=("minecraft:dark_prismarine_stairs", "minecraft:dark_prismarine", "minecraft:dark_prismarine_slab"),
+                  colors=["blue", "light_blue", "white"]),             # indigo and undyed linen: the city's export
+    "yards": dict(roof=("minecraft:brick_stairs", "minecraft:bricks", "minecraft:brick_slab"),
+                  colors=["brown", "orange", "black"]),               # leather, forge-glow, soot
+    "meat": dict(roof=("minecraft:red_nether_brick_stairs", "minecraft:red_nether_bricks",
+                       "minecraft:red_nether_brick_slab"),
+                 colors=["red", "gray", "white"]),                    # the butcher's red, his apron and his block
+    "hall": dict(roof=("minecraft:waxed_oxidized_cut_copper_stairs", "minecraft:waxed_oxidized_cut_copper",
+                       "minecraft:waxed_oxidized_cut_copper_slab"),
+                 colors=["green", "yellow", "lime"]),                 # the mess, the music and the school: harvest colours
+}
 OUT = {(0, -1): "north", (0, 1): "south", (-1, 0): "west", (1, 0): "east"}
 BED_COLORS = ["blue", "light_blue", "white", "gray", "cyan", "brown"]
 
@@ -31,6 +45,39 @@ BED_COLORS = ["blue", "light_blue", "white", "gray", "cyan", "brown"]
 class DogBuilder(RCBBuilder):
     weathered = False      # well kept: no moss, no cracks, no vines
     capped = False
+
+    def finish(self):
+        self.unblock_windows()
+        super().finish()
+
+    def unblock_windows(self):
+        """No ladder ever hangs over a window: glass behind a ladder becomes the wall it was cut in."""
+        back = {"north": (0, 1), "south": (0, -1), "east": (-1, 0), "west": (1, 0)}
+        for (x, y, z), b in list(self.blocks.items()):
+            if b[0] != "minecraft:ladder":
+                continue
+            dx, dz = back[b[1]["facing"]]
+            w = self.blocks.get((x + dx, y, z + dz))
+            if w and "glass" in w[0]:
+                fill = STONE
+                for yy in (y - 1, y + 1, y - 2, y + 2):
+                    o = self.blocks.get((x + dx, yy, z + dz))
+                    if o and "glass" not in o[0] and o[0] != "minecraft:air" and not o[1]:
+                        fill = o[0]
+                        break
+                self.put(x + dx, y, z + dz, fill)
+
+    def rug(self, x0, x1, z0, z1, y, edge, field):
+        """A carpet rug: one colour round the edge, another in the middle; only on bare floor."""
+        for x in range(x0, x1 + 1):
+            for z in range(z0, z1 + 1):
+                if (x, y, z) in self.blocks and self.blocks[(x, y, z)][0] != "minecraft:air":
+                    continue
+                c = edge if x in (x0, x1) or z in (z0, z1) else field
+                self.put(x, y, z, f"minecraft:{c}_carpet")
+
+    def wall_banner(self, x, y, z, facing, color):
+        self.put(x, y, z, f"minecraft:{color}_wall_banner", {"facing": facing})
 
     # ------------------------------------------------------------ walls
     def walls(self, x0, x1, z0, z1, y0, y1, mat=STONE):

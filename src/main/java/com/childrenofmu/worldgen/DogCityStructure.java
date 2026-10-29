@@ -190,6 +190,15 @@ public class DogCityStructure extends Structure {
             int j = (i + 1) % STAR.length;
             pieces.add(new CityWallPiece(ring[i * 2], ring[i * 2 + 1], cy, ring[j * 2], ring[j * 2 + 1], cy, keepOut, 1));
         }
+        // ---- Its corners (and where it meets the gatehouse's sides): solid stone landings, level with the walk.
+        int[] points = new int[STAR.length * 2 + 4];
+        System.arraycopy(ring, 0, points, 0, ring.length);
+        for (int s = 0; s < 2; s++) {
+            int[] t = turn(s == 0 ? -GATE_HALF - 1 : GATE_HALF + 1, GATE_AT - 1, k);
+            points[ring.length + s * 2] = cx + t[0];
+            points[ring.length + s * 2 + 1] = cz + t[1];
+        }
+        pieces.add(new DogCornerPiece(ground + CityWallPiece.HEIGHT - 1, ring, points, keepOut));
         // ---- The moat outside it, bridged at the gate; and last, the roads (only over open ground).
         pieces.add(new DogMoatPiece(cx, cz, cy, k, ring));
         pieces.add(new DogGroundPiece(cx, cz, cy, k));

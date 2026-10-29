@@ -12,12 +12,15 @@ Run: python3 make_dog_city.py
 """
 import os
 
-from dog_build import (DogBuilder, STONE, PLINTH, PLASTER, FLOOR, SCREEN, TILE, DARK, POST, BEAM)
+from dog_build import (THEMES, DogBuilder, STONE, PLINTH, PLASTER, FLOOR, SCREEN, TILE, DARK, POST, BEAM)
 
 DIR = os.path.join(os.path.dirname(__file__), "..", "src", "main", "resources", "data", "childrenofmu", "structure")
 
 # A workshop: walls 1..11 (eleven square), eaves to 0..12.
 S, X0, X1, Z0, Z1, C = 13, 1, 11, 1, 11, 6
+
+
+QUARTER_THEME = {1: "cloth", 2: "yards", 3: "meat", 4: "hall"}
 
 
 def workshop(seed, sign, workers, beds, furnish, floor_mat=FLOOR):
@@ -27,13 +30,16 @@ def workshop(seed, sign, workers, beds, furnish, floor_mat=FLOOR):
     workers: [(variant, x, z)] put in the workroom.
     """
     B = DogBuilder(S, seed)
+    theme = THEMES[QUARTER_THEME[seed // 100]]
+    B.theme = theme
+    cols = theme["colors"]
     B.floor(X0, X1, Z0, Z1, 0, PLINTH)
     B.floor(X0 + 1, X1 - 1, Z0 + 1, Z1 - 1, 0, floor_mat)
     B.stone_storey(X0, X1, Z0, Z1, 1, 4)
     B.floor(X0 + 1, X1 - 1, Z0 + 1, Z1 - 1, 5, FLOOR)
     B.timber_storey(X0, X1, Z0, Z1, 5, 8)
     B.floor(X0 + 1, X1 - 1, Z0 + 1, Z1 - 1, 5, FLOOR)
-    B.hip_roof(X0, X1, Z0, Z1, 9)
+    B.hip_roof(X0, X1, Z0, Z1, 9, mat=theme["roof"])
     # The door, its threshold, a lamp each side and the trade's sign.
     B.door(C, 1, Z0, "south", kind="dark_oak_door")
     B.put(C, 3, Z0, "minecraft:chiseled_stone_bricks")
@@ -41,19 +47,23 @@ def workshop(seed, sign, workers, beds, furnish, floor_mat=FLOOR):
     for x in (C - 2, C + 2):
         B.bracket_lantern(x, 3, Z0 - 1, "north")
     B.street_sign(C + 1, Z0, 2, sign, wood="dark_oak")
+    for x in (X0 + 1, X1 - 1):
+        B.wall_banner(x, 4, Z0 - 1, "north", cols[0])         # the quarter's colours either side of the front
     # The ladder up, in the back corner, through a hatch.
     B.ladder(X1 - 1, Z1 - 1, 1, 5, "north")
     # Upstairs: the beds along the back and the sides, a barrel at each bed's foot, a lantern.
     spots = [(3, Z1 - 2, "south"), (5, Z1 - 2, "south"), (7, Z1 - 2, "south"),
              (X0 + 1, 3, "west"), (X1 - 1, 3, "east"), (X0 + 1, 6, "west")]
     for (x, z, f) in spots[:beds]:
+        color = cols[len([1 for b in B.blocks.values() if b[0].endswith("_bed")]) // 2 % 2]
         if f == "south":
-            B.bed(x, 6, z - 1, "south")
+            B.bed(x, 6, z - 1, "south", color)
         else:
-            B.bed(x + (1 if f == "west" else -1), 6, z, f)
+            B.bed(x + (1 if f == "west" else -1), 6, z, f, color)
     B.put(C, 8, C, "minecraft:lantern", {"hanging": "true", "waterlogged": "false"})
     B.put(C + 2, 6, Z0 + 2, "minecraft:barrel", {"facing": "up", "open": "false"})
     B.potted(C - 2, 6, Z0 + 1, "bamboo")
+    B.rug(X0 + 2, X1 - 2, Z0 + 2, Z1 - 3, 6, cols[0], cols[-1])    # the bedroom's rug, in the quarter's colours
     # Below: the lamps, the fittings, the workers.
     for (x, z) in ((4, 4), (8, 4), (4, 8), (8, 8)):
         B.put(x, 4, z, "minecraft:lantern", {"hanging": "true", "waterlogged": "false"})
@@ -97,7 +107,7 @@ def f_tailor(B):
     B.armor_stand(3, 1, 8, 180.0, kit="leather", hand=None)
     B.armor_stand(9, 1, 8, 180.0, kit="leather", hand=None)
     for x in range(4, 9):
-        B.put(x, 1, 9, "minecraft:light_blue_carpet")
+        B.put(x, 1, 9, f"minecraft:{B.theme['colors'][1]}_carpet")
     B.stocked_barrel(10, 1, 2, [("minecraft:leather", 16), ("minecraft:white_wool", 16)])
 
 
@@ -274,10 +284,11 @@ def f_teahouse(B):
     for (x, z) in ((4, 4), (8, 4), (4, 8), (8, 8)):
         B.low_table(x, 1, z)
         for (dx, dz) in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            B.put(x + dx, 1, z + dz, "minecraft:red_carpet")
-    B.put(C, 1, 6, "minecraft:campfire", {"facing": "north", "lit": "true", "signal_fire": "false",
+            B.put(x + dx, 1, z + dz, f"minecraft:{B.theme['colors'][1]}_carpet")
+    # The kettle over the hearth: the fire sunk in the floor, the pot standing at floor level.
+    B.put(C, 0, 6, "minecraft:campfire", {"facing": "north", "lit": "true", "signal_fire": "false",
                                           "waterlogged": "false"})
-    B.put(C, 2, 6, "minecraft:cauldron")
+    B.put(C, 1, 6, "minecraft:cauldron")
     for (x, z) in ((2, 2), (10, 2), (2, 10)):
         B.potted(x, 1, z, "azalea_bush")
 
@@ -350,6 +361,7 @@ def tower(seed, kind):
         B.put(x, 8, a0 - 1, f"minecraft:{banner}_wall_banner", {"facing": "north"})
     if kind == "kennel":
         kennel(B, a0, a1, c)
+        B.rug(4, 10, 3, 10, 6, "gray", "black")          # the keepers' room
         B.finish()
         return B
     # Second and third floors: the soldiers' beds (one each), barrels, a stand of arms.
@@ -378,6 +390,8 @@ def tower(seed, kind):
         B.stocked_barrel(10, 1, 4, [("minecraft:stick", 32), ("minecraft:iron_ingot", 8)])
     for (x, z) in ((5, 5), (9, 5), (5, 9), (9, 9)):
         B.dog(x, 1, z, soldier)
+    for y in (6, 11):
+        B.rug(4, 10, 3, 10, y, "gray", banner)          # the barrack rooms: gray, in the tower's colour
     B.finish()
     return B
 
@@ -455,6 +469,7 @@ def gatehouse():
     B.put(6, 10, 6, "minecraft:lantern", {"hanging": "true", "waterlogged": "false"})
     B.dog(6, 1, 3, "samurai", stay=3)
     B.dog(6, 1, 9, "samurai", stay=3)
+    B.rug(3, 9, 3, 9, 7, "gray", "red")                  # the guards' room
     B.finish()
     return B
 
