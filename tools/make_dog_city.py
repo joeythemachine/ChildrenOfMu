@@ -548,11 +548,6 @@ def keep():
             B.put(x, P, z, PLINTH)
     for x in range(22, 27):
         B.put(x, P + 5, HO0, "minecraft:chiseled_stone_bricks")
-    for (x, z) in ((KC, HI1), (HI0, KC), (HI1, KC)):
-        for d in (-1, 0, 1):
-            xx, zz = (x + d, z) if z == HI1 else (x, z + d)
-            for y in range(P + 1, P + 4):
-                B.air(xx, y, zz)
     # The ring roof over the halls, and a raised roof over the gate.
     B.ring_roof(HO0, HO1, HO0, HO1, HI0, HI1, HI0, HI1, top + 2)
     for (x, z) in ((20, HO0 - 1), (28, HO0 - 1)):
@@ -560,56 +555,124 @@ def keep():
     for (x, z) in ((3, 3), (45, 3), (3, 45), (45, 45)):
         B.stone_lantern(x, P + 1, z)
 
-    # ---- The halls inside.
+    # ---- The halls inside, walled into rooms (a doorway three high in every dividing wall, on the hall's middle line,
+    # so one can walk right round the ring). Front: the gate passage, the guards' barracks, an audience room. West
+    # (study): the library, the scriptorium. East: the council chamber, the monks' dormitory. Back: the prayer hall.
+    # Corners: an armoury, a store, a meditation room, the abbot's cell.
     hall_y = P + 1
-    # The prayer hall (the back, +z): mats in rows before an altar, candles, a bell.
-    for x in range(HO0 + 2, HO1 - 1):
+    lo, hi = HO0 + 1, HI0 - 1                         # a hall's inside, across (6..11); its middle line is 8..9
+    def wall_x(x, z0, z1):                            # a dividing wall across a front/back hall at x
+        for z in range(z0, z1 + 1):
+            for y in range(hall_y, top + 1):
+                B.put(x, y, z, PLINTH if y == hall_y else STONE)
+        for z in (z0 + 2, z0 + 3):
+            for y in range(hall_y, hall_y + 3):
+                B.air(x, y, z)
+    def wall_z(z, x0, x1):                            # across a side hall at z
+        for x in range(x0, x1 + 1):
+            for y in range(hall_y, top + 1):
+                B.put(x, y, z, PLINTH if y == hall_y else STONE)
+        for x in (x0 + 2, x0 + 3):
+            for y in range(hall_y, hall_y + 3):
+                B.air(x, y, z)
+    for x in (HI0, HI1, 21, 27):
+        wall_x(x, lo, hi)                             # front hall: corners off, the passage walled
+    for x in (HI0, HI1):
+        wall_x(x, HI1 + 1, HO1 - 1)                   # back hall: corners off
+    for (x0, x1) in ((lo, hi), (HI1 + 1, HO1 - 1)):
+        for z in (HI0, KC, HI1):
+            wall_z(z, x0, x1)                         # side halls: corners off, and halved
+    # The courtyard opens into the library, the council chamber and the prayer hall.
+    for (x, z) in ((KC, HI1), (HI0, 18), (HI1, 18)):
+        for d in (-1, 0, 1):
+            xx, zz = (x + d, z) if z == HI1 else (x, z + d)
+            for y in range(hall_y, hall_y + 3):
+                B.air(xx, y, zz)
+    rooms = []
+    def lamp(x, z):
+        B.put(x, top, z, "minecraft:lantern", {"hanging": "true", "waterlogged": "false"})
+
+    # The prayer hall (the back): mats in rows before the altar, candles, the bell.
+    for x in range(HI0 + 2, HI1 - 1):
         for z in (HI1 + 2, HI1 + 4):
-            if (x - HO0) % 3 != 0:
+            if (x - HI0) % 3 != 0:
                 B.put(x, hall_y, z, "minecraft:light_gray_carpet")
     for x in range(KC - 3, KC + 4):
         B.put(x, hall_y, HO1 - 1, "minecraft:polished_andesite_slab", {"type": "bottom", "waterlogged": "false"})
     B.put(KC, hall_y, HO1 - 1, "minecraft:polished_andesite")
     B.put(KC, hall_y + 1, HO1 - 1, "minecraft:candle", {"candles": "3", "lit": "true", "waterlogged": "false"})
     for x in (KC - 2, KC + 2):
-        B.put(x, hall_y + 1, HO1 - 1, "minecraft:candle", {"candles": "2", "lit": "true", "waterlogged": "false"}) if False else \
-            B.put(x, hall_y, HO1 - 1, "minecraft:polished_andesite")
+        B.put(x, hall_y, HO1 - 1, "minecraft:polished_andesite")
         B.put(x, hall_y + 1, HO1 - 1, "minecraft:candle", {"candles": "2", "lit": "true", "waterlogged": "false"})
     B.put(KC, top, HO1 - 2, "minecraft:bell", {"attachment": "ceiling", "facing": "north", "powered": "false"})
-    # The library (the west hall): shelves along the outer wall, lecterns and desks.
-    for z in range(HO0 + 2, HO1 - 1):
+    for x in (17, 31):
+        lamp(x, HI1 + 3)
+
+    # The library (west, front half): shelves on the outer wall, the five fables on lecterns, reading cushions.
+    for z in range(HI0 + 1, KC):
         if z % 4 != 0:
-            B.put(HO0 + 1, hall_y, z, "minecraft:bookshelf")
-            B.put(HO0 + 1, hall_y + 1, z, "minecraft:bookshelf")
-    # The five fables of the Keep, one on each lectern. The monks' questions (DogTrust.QUESTIONS) are only
-    # answerable by one who has read them.
-    for z, pages in zip((10, 16, 22, 28, 34), FABLES):
-        B.lectern(HO0 + 4, hall_y, z, "east", pages)
-        B.low_table(HO0 + 3, hall_y, z + 2)
-    # The council chamber (the east hall, front half): a long low table with cushions.
-    for z in range(HO0 + 3, KC - 2):
-        B.low_table(HO1 - 4, hall_y, z)
-        B.put(HO1 - 5, hall_y, z, "minecraft:red_carpet")
-        B.put(HO1 - 3, hall_y, z, "minecraft:red_carpet")
-    # The dormitory (the east hall, back half): a bed for every monk and keep guard.
-    beds = 0
-    for z in range(KC + 1, HO1 - 1, 2):
-        B.bed(HO1 - 2, hall_y, z, "east")
-        beds += 1
-    for z in range(KC + 1, HO1 - 1, 2):
-        if beds >= 10:
-            break
-        B.bed(HO1 - 5, hall_y, z, "west") if False else None
-    # The front hall: the guards' room either side of the passage, beds along its walls.
-    for x in range(HO0 + 2, 20, 2):
-        B.bed(x, hall_y, HO0 + 1, "north") if False else B.bed(x, hall_y, HI0 - 2, "north")
-    for x in range(30, HO1 - 1, 2):
-        B.bed(x, hall_y, HI0 - 2, "north")
-    # Lanterns all round.
-    for v in range(HO0 + 2, HO1 - 1, 5):
-        for (x, z) in ((v, HO0 + 3), (v, HO1 - 3), (HO0 + 3, v), (HO1 - 3, v)):
-            if B.is_free(x, top, z):
-                B.put(x, top, z, "minecraft:lantern", {"hanging": "true", "waterlogged": "false"})
+            B.put(lo, hall_y, z, "minecraft:bookshelf")
+            B.put(lo, hall_y + 1, z, "minecraft:bookshelf")
+    for z, pages in zip((14, 16, 18, 20, 22), FABLES):
+        B.lectern(hi - 1, hall_y, z, "west", pages)
+        B.put(hi - 2, hall_y, z, "minecraft:light_gray_carpet")
+    lamp(8, 18)
+    # The scriptorium (west, back half): writing desks with cushions, the old books of rules, shelves.
+    for z in range(KC + 1, HI1):
+        if z % 4 != 0:
+            B.put(lo, hall_y, z, "minecraft:bookshelf")
+    for z in (27, 31):
+        B.low_table(hi - 1, hall_y, z)
+        B.put(hi - 2, hall_y, z, "minecraft:red_carpet")
+        B.put(hi - 1, hall_y + 1, z, "minecraft:candle", {"candles": "1", "lit": "true", "waterlogged": "false"})
+    B.lectern(hi - 1, hall_y, 34, "west", ["On Duty. The bow, the blade, the pike, the kennel: four duties, one dog.",
+                                          "On Silence. The tower is not spoken of. It is kept.",
+                                          "On the Bandages. He kneels so that we may stand."])
+    lamp(8, 30)
+
+    # The council chamber (east, front half): a long low table, cushions down both sides.
+    for z in range(15, 22):
+        B.low_table(HO1 - 3, hall_y, z)
+        B.put(HO1 - 4, hall_y, z, "minecraft:red_carpet")
+        B.put(HO1 - 2, hall_y, z, "minecraft:red_carpet")
+    B.put(HO1 - 3, hall_y, 14, "minecraft:red_carpet")
+    lamp(HO1 - 4, 18)
+    # The monks' dormitory (east, back half): five beds against the outer wall, a rug, a lantern.
+    for z in (26, 28, 30, 32, 34):
+        B.bed(HO1 - 2, hall_y, z, "east", "light_gray")
+    B.rug(HI1 + 1, HO1 - 4, 26, 34, hall_y, "gray", "light_gray")
+    lamp(HO1 - 5, 30)
+
+    # The abbot's cell (back east corner): a bed, a rug, a lectern; the meditation room (back west): one mat, candles.
+    B.bed(HO1 - 2, hall_y, HO1 - 2, "east", "white")
+    B.rug(HI1 + 1, HO1 - 3, HI1 + 1, HO1 - 1, hall_y, "light_gray", "white")
+    lamp(HI1 + 3, HI1 + 3)
+    B.put(lo + 2, hall_y, HO1 - 3, "minecraft:brown_carpet")
+    for (x, z) in ((lo, HO1 - 1), (hi, HO1 - 1), (lo, HI1 + 1)):
+        B.put(x, hall_y, z, "minecraft:candle", {"candles": "3", "lit": "true", "waterlogged": "false"})
+    B.potted(hi, hall_y, HI1 + 1, "bamboo")
+
+    # The guards' barracks (front, west of the passage): four beds along the outer wall.
+    for x in (14, 16, 18, 20):
+        B.bed(x, hall_y, lo + 1, "north", "gray")
+    B.rug(13, 20, lo + 3, hi, hall_y, "gray", "red")
+    lamp(17, 8)
+    # The audience room (front, east of the passage): low tables and cushions where guests are received.
+    for x in (30, 33):
+        B.low_table(x, hall_y, lo + 1)
+        B.low_table(x, hall_y, hi - 1)
+        for z in (lo + 2, hi - 2):
+            B.put(x, hall_y, z, "minecraft:red_carpet")
+    B.potted(35, hall_y, lo, "azalea_bush")
+    lamp(31, 8)
+    # The armoury (front west corner) and the store (front east corner).
+    for x in (lo + 1, lo + 3):
+        B.armor_stand(x, hall_y, lo, 0.0, kit="iron", hand="minecraft:iron_sword")
+    B.stocked_barrel(hi, hall_y, lo, [("minecraft:arrow", 64), ("minecraft:shield", 2)])
+    for (x, z) in ((HO1 - 1, lo), (HO1 - 1, lo + 1), (HO1 - 2, lo)):
+        B.stocked_barrel(x, hall_y, z, [("minecraft:cooked_beef", 32), ("minecraft:bone", 16)])
+    lamp(8, 8)
+    lamp(HO1 - 4, 8)
 
     # ---- The courtyard: grass, gravel walks, flowering shrubs, stone lanterns and stools, a pond in each corner.
     for x in range(HI0 + 1, HI1):
@@ -637,8 +700,8 @@ def keep():
         B.potted(x, P + 1, z, "bamboo")
 
     # ---- The monks, and the keep's guards (who'll keep everyone out of the tower).
-    for (v, x, z) in (("monk", 20, HI1 + 3), ("husky_monk", 28, HI1 + 3), ("monk", HO0 + 3, 20),
-                      ("husky_monk", HO0 + 3, 30), ("monk", HO1 - 4, 15), ("husky_monk", HO1 - 4, 19)):
+    for (v, x, z) in (("monk", 20, HI1 + 3), ("husky_monk", 28, HI1 + 3), ("monk", 8, 19),
+                      ("husky_monk", 8, 29), ("monk", HO1 - 5, 17), ("husky_monk", HO1 - 5, 29)):
         B.dog(x, hall_y, z, v)
     for (x, z) in ((KC - 2, HO0 - 1), (KC + 2, HO0 - 1)):
         B.dog(x, P + 1, z, "samurai", stay=3)                          # at the top of the stair

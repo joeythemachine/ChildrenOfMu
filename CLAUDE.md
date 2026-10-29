@@ -139,6 +139,11 @@ Python, no dependencies. Stage the save's region files from the laptop first.
   **Courtyard without the monks' trust:** an alarm (`DogTrust.onServerTick`): High Guards attack at once, the nearest
   monk runs to the Keep's bell and rings it, every soldier in the city joins after 3 s; stands down 20 s after the
   intruder leaves the Keep (or dies). Dog soldiers have melee (archers shoot), fight back, never panic.
+- **The Keep's halls are rooms** (walls across the ring, a 3-high doorway on each hall's middle line so you can walk
+  right round): gate passage walled, guards' barracks (4 beds) and audience room in front; library (fable lecterns)
+  and scriptorium west; council chamber and monks' dormitory (5 beds) east; prayer hall at the back; armoury, store,
+  meditation room and abbot's cell (1 bed) in the corners. Courtyard arches open into library, council, prayer hall.
+  10 beds = the Keep's 10 dogs. Keep beds against walls, never across a walking line.
 - Dark tower: solid base, door 4 up in a blackstone portal, a stair up to it in the Keep template; the spiral turns
   on flat corner landings (corner *stairs* in a 1-wide well became outer-shaped lips and couldn't be climbed).
 - **Outside the walls** (`DogFarmPiece`, after the moat): wheat terraces following the star outward, a step down
