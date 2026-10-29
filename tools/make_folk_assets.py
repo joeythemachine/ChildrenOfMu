@@ -138,8 +138,8 @@ def dog_parts():
     return [
         part("head", (0, 8, 0), [box(-5, -9, -4, 10, 9, 8, "head"), box(-2, -4, -7, 4, 3, 3, "snout")]),
         # Spaniel: long floppy ears. Husky: tall pointed ears.
-        part("left_ear", (5, -8, 0), [box(0, 0, -2, 2, 10, 4, "flop")], rot=(0, 0, -8), parent="head", only=['monk', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher', 'bandaged']),
-        part("right_ear", (-5, -8, 0), [box(-2, 0, -2, 2, 10, 4, "flop")], rot=(0, 0, 8), parent="head", only=['monk', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher', 'bandaged']),
+        part("left_ear", (5, -8, 0), [box(0, 0, -2, 2, 10, 4, "flop")], rot=(0, 0, -8), parent="head", only=['monk', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher']),
+        part("right_ear", (-5, -8, 0), [box(-2, 0, -2, 2, 10, 4, "flop")], rot=(0, 0, 8), parent="head", only=['monk', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher']),
         part("left_point", (3.5, -9, -0.5), [box(-1.5, -3, -0.5, 3, 3, 1, "ear"), box(-0.5, -5, -0.5, 1, 2, 1, "ear")],
              rot=(0, 0, 6), parent="head", only=['husky_monk', 'archer', 'dyer', 'smith', 'woodcutter', 'butcher', 'musician', 'biter', 'high_guard']),
         part("right_point", (-3.5, -9, -0.5), [box(-1.5, -3, -0.5, 3, 3, 1, "ear"), box(-0.5, -5, -0.5, 1, 2, 1, "ear")],
@@ -159,13 +159,22 @@ def dog_parts():
              only=["samurai", "high_guard"]),
         part("left_sode", (0, 0, 0), [box(-1.5, -1.5, -2, 4, 4, 4, "sode")], parent="left_arm",
              only=["samurai", "high_guard"]),
+        # The Whipped (the one in the tower): an iron cauldron over his head, handles at its sides, torn strips of
+        # bandage hanging below its rim and from his hands.
+        part("cauldron", (0, 0, 0), [box(-6, -11, -5, 12, 8, 10, "cauldron"), box(-6.5, -4, -5.5, 13, 1, 11, "rim"),
+                                     box(-7.5, -9, -1, 1, 3, 2, "rim"), box(6.5, -9, -1, 1, 3, 2, "rim"),
+                                     box(-4.5, -3, -5.6, 1, 5, 1, "strip"), box(3.5, -3, -5.6, 1, 6, 1, "strip"),
+                                     box(-6, -3, 2, 1, 4, 1, "strip"), box(5, -3, -1, 1, 7, 1, "strip")],
+             parent="head", only=["bandaged"]),
+        part("right_strip", (0, 0, 0), [box(-1, 6, -0.5, 1, 4, 1, "strip")], parent="right_arm", only=["bandaged"]),
+        part("left_strip", (0, 0, 0), [box(0, 6, -0.5, 1, 3, 1, "strip")], parent="left_arm", only=["bandaged"]),
         # The High Guard of the dark tower: a sashimono on his back, a pole and crossbar flying the tower's banner.
         # (Stood clear of the head's back, the flag a thin board, not a zero-thick plane: no z-fighting.)
         part("sashimono", (0, 0, 0), [box(-0.5, -15, 4.5, 1, 22, 1, "pole"), box(-3.5, -15, 4.5, 7, 1, 1, "pole"),
                                       box(-3, -14, 5.5, 6, 10, 1, "flag")], parent="body", only=["high_guard"]),
         part("right_leg", (-2, 17, 0), [box(-1.5, 0, -1.5, 3, 7, 3, "leg"), box(-1.5, 6, -2.5, 3, 1, 1, "toes")]),
         part("left_leg", (2, 17, 0), [box(-1.5, 0, -1.5, 3, 7, 3, "leg"), box(-1.5, 6, -2.5, 3, 1, 1, "toes")]),
-        part("tail", (0, 15, 3), [box(-1, -1, 0, 2, 2, 4, "tail")], rot=(-30, 0, 0), only=['monk', 'stablemaster', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher', 'bandaged']),
+        part("tail", (0, 15, 3), [box(-1, -1, 0, 2, 2, 4, "tail")], rot=(-30, 0, 0), only=['monk', 'stablemaster', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher']),
         part("tail_bushy", (0, 15, 3), [box(-1.5, -1.5, 0, 3, 3, 7, "tail")], rot=(-55, 0, 0),
              only=['husky_monk', 'samurai', 'archer', 'dyer', 'smith', 'woodcutter', 'butcher', 'musician', 'pikeman', 'biter', 'high_guard']),
     ]
@@ -597,13 +606,18 @@ def dog_painter(pal):
         return c
 
     def bandage(x, y, z, face, tx, ty):
-        """Linen wrappings, wound round and round, yellowed and stained here and there."""
-        c = fur((222, 210, 184), tx, ty, 7)
+        """Linen wrappings, wound round and round, grimy and grey-tan, with old blood come through in places."""
+        base = (214, 200, 174) if noise("wrap", tx // 2, ty // 4) < 0.6 else (176, 164, 140)    # dirty and worn
+        c = fur(base, tx, ty, 9)
         band = (y * 1.6 + (x if face in ("north", "south") else z) * 0.45 + 40) % 2.0
         if band < 0.32:
-            c = shade(c, -34)                                                     # the edge of each turn
-        if noise("stain", tx // 3, ty // 3) < 0.07:
-            c = mix(c, (150, 120, 80), 0.45)
+            c = shade(c, -38)                                                     # the edge of each turn
+        if noise("stain", tx // 4, ty // 4) < 0.14:
+            c = mix(c, (110, 84, 60), 0.5)                                        # grime
+        b = noise("blood", tx // 5, ty // 4)
+        edge = noise("bloodedge", tx, ty)
+        if b < 0.16 and edge < 0.8:
+            c = mix(c, (118, 24, 20), 0.75 if b < 0.08 else 0.45)                 # blood seeping through, in patches
         return c
 
     def tower(u, v):
@@ -647,6 +661,18 @@ def dog_painter(pal):
                 elif tag == "skirt" and tower(x / 1.5, (y - 0.6) / 3.6):
                     c = fur(pal["emblem"], tx, ty, 4)
                 return rgba(shade(c, FACE_LIGHT[face]))
+        if tag in ("cauldron", "rim"):
+            c = fur((70, 68, 68), tx, ty, 8)                                       # old iron
+            if tag == "cauldron" and (y > -4.6 or y < -10.4):
+                c = shade(c, -22)                                                  # its lip and its base
+            if noise("rust", tx // 2, ty // 2) < 0.08:
+                c = mix(c, (110, 70, 44), 0.5)
+            return rgba(shade(c, FACE_LIGHT[face]))
+        if tag == "strip":
+            c = bandage(x, y, z, face, tx, ty)
+            if y > 1 + noise("fray", int(x * 2), face) * 3 and noise("tear", tx, ty) < 0.3:
+                return CLEAR                                                      # frayed ends
+            return rgba(shade(c, FACE_LIGHT[face]))
         if pal.get("bandaged"):
             c = bandage(x, y, z, face, tx, ty)
             if tag == "head" and face == "north" and -6.0 < y < -5.0 and 1.2 < abs(x) < 3.4:

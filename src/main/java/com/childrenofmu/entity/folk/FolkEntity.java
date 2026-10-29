@@ -495,8 +495,18 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
         if (!this.hasCustomName()) {
             return getDisplayName();
         }
-        return net.minecraft.network.chat.Component.literal(FolkNames.shortName(getCustomName().getString()));
+        net.minecraft.network.chat.MutableComponent title =
+                net.minecraft.network.chat.Component.literal(FolkNames.shortName(getCustomName().getString()));
+        if (this.race == FolkRace.DOG) {
+            // The vocation rides along unseen in the title's style; the client draws it on a line of its own beneath.
+            String v = FolkNames.vocation(getVariantName(), isBaby());
+            title = title.withStyle(st -> st.withInsertion(VOCATION_TAG + v));
+        }
+        return title;
     }
+
+    /** Marks a trading window's title as carrying a vocation (see client.VocationLine). */
+    public static final String VOCATION_TAG = "childrenofmu:vocation:";
 
     /** Folk are townspeople, not wildlife: they never despawn. */
     @Override

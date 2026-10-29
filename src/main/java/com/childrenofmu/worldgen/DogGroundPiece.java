@@ -226,8 +226,15 @@ public class DogGroundPiece extends StructurePiece {
         for (int x = box.minX(); x <= box.maxX(); x++) {
             for (int z = box.minZ(); z <= box.maxZ(); z++) {
                 int[] l = DogCityStructure.turn(x - this.cx, z - this.cz, -this.turn);
-                if (!insideWalls(l[0] + 0.5, l[1] + 0.5, 1.5) || (Math.abs(l[0]) <= 25 && Math.abs(l[1]) <= 25)) {
+                // (Only the Keep's own footprint is skipped: the road round it, just outside, gets its holes filled too.)
+                if (!insideWalls(l[0] + 0.5, l[1] + 0.5, 0.5) || (Math.abs(l[0]) <= 24 && Math.abs(l[1]) <= 24)) {
                     continue;
+                }
+                for (int y = top - 8; y <= top + 2; y++) {
+                    p.set(x, y, z);
+                    if (box.isInside(p) && level.getFluidState(p).is(net.minecraft.tags.FluidTags.LAVA)) {
+                        level.setBlock(p, (y <= top ? Blocks.STONE : Blocks.AIR).defaultBlockState(), 2);   // no lava
+                    }
                 }
                 p.set(x, top, z);
                 if (!box.isInside(p) || !natural(level.getBlockState(p))) {

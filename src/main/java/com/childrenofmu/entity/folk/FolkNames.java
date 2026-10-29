@@ -136,11 +136,121 @@ public final class FolkNames {
         };
     }
 
+    // ---- Dog folk: family name first, then given name. The given names are Japanese names turned into their English
+    // meanings, and those into the nearest common dog's name; the family names are Japanese surnames in English.
+    private static final String[] DOG_GIVEN = {
+            "Rex",        // Kimio: king
+            "Sunny",      // Hikaru: light
+            "Buddy",      // Daisuke: great helper
+            "Bear",       // Kuma: bear
+            "Duke",       // Taro: eldest son
+            "Spike",      // Ryu: dragon
+            "Comet",      // Hoshi: star
+            "Goldie",     // Kin: gold
+            "Snowy",      // Yuki: snow
+            "Dash",       // Hayate: gale
+            "Sparky",     // Akira: bright
+            "Champ",      // Masaru: victory
+            "Hero",       // Isamu: courage
+            "Ranger",     // Mamoru: protector
+            "Max",        // Kenta: big and healthy
+            "Tank",       // Takeshi: warrior
+            "Shadow",     // Kuro: black
+            "Ghost",      // Shiro: white
+            "Peaches",    // Momo: peach
+            "Daisy",      // Hana: flower
+            "Skye",       // Sora: sky
+            "Rocky",      // Ishi: stone
+            "Lucky",      // Fuku: good fortune
+            "Peanut",     // Chibi: little one
+            "Tiger",      // Tora: tiger
+            "Fang",       // Kiba: fang
+            "Rusty",      // Tetsu: iron
+            "Luna",       // Tsuki: moon
+            "Plum",       // Ume: plum
+            "Blossom",    // Sakura: cherry blossom
+            "Princess",   // Hime: princess
+            "Duchess",    // Rin: dignified
+            "Belle",      // Suzu: bell
+            "Melody",     // Kotone: the koto's sound
+            "Scout",      // Michi: the path
+            "River",      // Taiga: great river
+            "Buster",     // Kotaro: little big boy
+            "Button",     // Botan: peony (button)
+            "Ace",        // Ichiro: first son
+            "Storm",      // Arashi: storm
+            "Thunder",    // Kaminari: thunder
+            "Breeze",     // Kaze: wind
+            "Maple",      // Aki: autumn
+            "Nugget",     // Kogane: gold
+            "Fido",       // Tadashi: loyal
+            "Trusty",     // Nobu: trust
+            "Midnight",   // Yoru: night
+            "Fluffy"};    // Kumo: cloud
+    private static final String[] DOG_FAMILY = {
+            "Hillfoot",     // Yamamoto
+            "Midfield",     // Tanaka
+            "Highbridge",   // Takahashi
+            "Littlewood",   // Kobayashi
+            "Pinewood",     // Matsumoto
+            "Stonebrook",   // Ishikawa
+            "Blackfield",   // Kuroda
+            "Whitehill",    // Shiroyama
+            "Grove",        // Hayashi
+            "Forrest",      // Mori
+            "Middleton",    // Nakamura
+            "Northam",      // Kitamura
+            "Westfield",    // Nishida
+            "Easthill",     // Higashiyama
+            "Wisterfield",  // Fujiwara
+            "Pondfield",    // Ikeda
+            "Hillfield",    // Okada
+            "Bridgefoot",   // Hashimoto
+            "Templeton",    // Miyamoto
+            "Rockfield",    // Iwata
+            "Rivermouth",   // Kawaguchi
+            "Upton",        // Murakami
+            "Clearwater",   // Shimizu
+            "Cedarhill",    // Sugiyama
+            "Greathill",    // Oyama
+            "Greenwood",    // Aoki
+            "Cherrywell",   // Sakurai
+            "Plumfield",    // Umeda
+            "Goodfield",    // Yoshida
+            "Stonefield",   // Ishida
+            "Woodfield",    // Morita
+            "Starfield",    // Hoshino
+            "Purewater"};   // Kiyomizu
+
+    /** What a Dog does, for under their name ("Weaver", "High Guard"). */
+    public static String vocation(String variant, boolean young) {
+        if (young) {
+            return "Pupil";
+        }
+        return switch (variant) {
+            case "monk", "husky_monk" -> "Monk";
+            case "samurai" -> "Samurai";
+            case "archer" -> "Bowman";
+            case "pikeman" -> "Pikeman";
+            case "stablemaster" -> "Stablemaster";
+            case "smith" -> "Blacksmith";
+            case "high_guard" -> "High Guard of the Tower";
+            case "bandaged" -> "The Bound One";
+            default -> Character.toUpperCase(variant.charAt(0)) + variant.substring(1);
+        };
+    }
+
     /** A fresh name for this folk, or null if its race goes unnamed for now. */
     @Nullable
     public static Component name(FolkRace race, String variant, RandomSource random) {
         if (race == FolkRace.CAT || race == FolkRace.RAT || race == FolkRace.BAT) {
             return cityName(race, variant, random);
+        }
+        if (race == FolkRace.DOG) {
+            if ("bandaged".equals(variant)) {
+                return Component.literal("The Whipped");
+            }
+            return Component.literal(pick(DOG_FAMILY, random) + " " + pick(DOG_GIVEN, random));
         }
         if (race != FolkRace.FROG) {
             return null;

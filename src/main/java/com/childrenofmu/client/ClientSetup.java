@@ -16,6 +16,7 @@ public final class ClientSetup {
     public static void init(IEventBus modEventBus) {
         modEventBus.addListener(ClientSetup::registerLayers);
         modEventBus.addListener(ClientSetup::registerRenderers);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(VocationLine::onRender);
     }
 
     private static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {

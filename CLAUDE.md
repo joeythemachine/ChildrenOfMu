@@ -164,6 +164,16 @@ Python, no dependencies. Stage the save's region files from the laptop first.
 - **Soldiers (samurai, pikemen, bowmen) don't trade.** With the monks' trust a player can recruit up to 2
   (right-click; sneak + right-click sends them home): they follow (teleport when far), fight what attacks the player
   or what the player strikes, forgive the player's own slips; `companionOf` is saved.
+- **Dog names** (`FolkNames`): family name first, then given name ("Hillfoot Rex"). Given names = Japanese name ->
+  English meaning -> nearest common dog name (Kimio > king > Rex); family names = Japanese surnames in English
+  (Yamamoto > Hillfoot). Everyone is named, soldiers too; the bandaged one is "The Whipped". **Vocation** shows on its
+  own line under the name in the trading window: the server puts it in the title's style insertion
+  (`FolkEntity.VOCATION_TAG`), `client/VocationLine` draws it.
+- **The Whipped** (`bandaged`): iron cauldron over the head (handles), torn hanging strips, grimy bandages with blood
+  in patches (owner's reference sheet). Pose not yet hunched (the pose is shared by all dogs).
+- **No lava, no holes**: `CityTerrainPiece` seals lava near the surface across any city's ring and plots;
+  `DogGroundPiece` also seals it under the lawns and fills pits right up to the Keep's own footprint (the ring road
+  round the Keep had holes when the skip went too wide).
 - Every dog has a bed except the Biters. Dog variants for the trades, plus `pikeman`, `biter`, `bandaged`
   (not random, don't trade).
 - Round 2 (to do): guards (High Guards) warn then attack near/in the dark tower; Biters stay in the kennel; killing the bandaged

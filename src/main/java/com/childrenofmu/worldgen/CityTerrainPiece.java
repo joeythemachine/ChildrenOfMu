@@ -147,6 +147,16 @@ public class CityTerrainPiece extends StructurePiece {
                     int give = bestD + wobble;
                     target = Mth.clamp(target, py - give, py + give);
                 }
+                if (inRing || bestD <= SKIRT) {
+                    // No lava in an orderly town: any lying near the surface (a lake the levelling opened) is sealed
+                    // with stone below the ground, and cleared above it.
+                    for (int y = Math.min(target, natural) - 6; y <= Math.max(target, natural) + 2; y++) {
+                        p.set(x, y, z);
+                        if (box.isInside(p) && level.getFluidState(p).is(net.minecraft.tags.FluidTags.LAVA)) {
+                            level.setBlock(p, (y <= target ? Blocks.STONE : Blocks.AIR).defaultBlockState(), 2);
+                        }
+                    }
+                }
                 if (target == natural && !(wet && (inRing || bestD <= SKIRT))) {
                     continue;       // untouched (and the sea round about stays the sea)
                 }
