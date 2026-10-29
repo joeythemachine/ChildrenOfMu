@@ -91,6 +91,15 @@ public class CityTerrainPiece extends StructurePiece {
             for (int z = box.minZ(); z <= box.maxZ(); z++) {
                 int noise = generator.getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, level,
                         level.getLevel().getChunkSource().randomState()) - 1;
+                // Forest rocks (old growth taiga's mossy boulders) are placed before the city and would read as ground:
+                // the city built round them and paved up to them. Take them away, and fill what was sunk in the earth.
+                for (int y = Math.min(noise + 8, box.maxY()); y >= Math.max(noise - 4, box.minY()); y--) {
+                    p.set(x, y, z);
+                    if (level.getBlockState(p).is(Blocks.MOSSY_COBBLESTONE)) {
+                        level.setBlock(p, (y > noise ? Blocks.AIR : y == noise ? Blocks.GRASS_BLOCK : Blocks.DIRT)
+                                .defaultBlockState(), 2);
+                    }
+                }
                 // The real ground: below any water, and down into any ravine or cave the noise height knows nothing of.
                 int natural = noise;
                 boolean wet = false;

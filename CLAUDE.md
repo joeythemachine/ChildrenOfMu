@@ -79,6 +79,8 @@ Python, no dependencies. Stage the save's region files from the laptop first.
   once stole the last board).
 - Where two wall stretches meet, one stretch's timber (boards, rail) may sit on the other's cells: the catwalk
   treats dark oak slabs/fences/stairs as relayable.
+- `CityTerrainPiece` removes forest rocks (mossy cobblestone boulders, old growth taiga) first: they read as ground
+  and the city built and paved round them.
 - Ground paving treats natural blocks as paveable: it must **leave sand alone** (it once paved over the fight pit,
   so the bookie couldn't find his pit).
 - Skywalks join opposite upper floors across streets (`TemplateInfo` anchors: plain flat wall both sides, a real
