@@ -38,6 +38,7 @@ public class ChildrenOfMu {
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(com.childrenofmu.entity.folk.DogTrust::onRegisterCommands);
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(com.childrenofmu.entity.folk.DogTrust::onDeath);
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(com.childrenofmu.entity.folk.DogTrust::onPlayerTick);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(com.childrenofmu.entity.folk.DogTrust::onServerTick);
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(com.childrenofmu.entity.folk.FolkLaw::onBreak);
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(com.childrenofmu.entity.folk.FolkLaw::onOpen);
         net.neoforged.neoforge.common.NeoForge.EVENT_BUS.addListener(com.childrenofmu.entity.folk.FolkLaw::onClose);

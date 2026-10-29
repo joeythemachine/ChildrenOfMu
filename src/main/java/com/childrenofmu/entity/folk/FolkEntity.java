@@ -72,6 +72,11 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
     private int merchantLevel = 1;
     private boolean levelUpPending;
     private static final int[] LEVEL_XP = {0, 10, 70, 150, 250};
+    /** Dog City guards walking an unwelcome visitor out of town (see DogTrust): who, until when, and which side. */
+    @Nullable java.util.UUID escortOf;
+    long escortUntil;
+    int escortSlot;
+    @Nullable net.minecraft.world.phys.Vec3 escortFrom;     // the Keep's middle: the guard keeps between it and them
     /** Set when the save (or a template) already gave this one a size. */
     private boolean sizePreset;
     /** Set when a structure or command chose the variant, so spawning doesn't pick another. */
@@ -341,6 +346,12 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
             setBase(Attributes.STEP_HEIGHT, 1.1);
             this.setPersistenceRequired();
         }
+        if (FolkCombat.isDogSoldier(this) && !"high_guard".equals(getVariantName())) {
+            setBase(Attributes.MAX_HEALTH, 30.0);
+            setBase(Attributes.ATTACK_DAMAGE, "pikeman".equals(getVariantName()) ? 7.0 : 6.0);
+            setBase(Attributes.ARMOR, 6.0);
+            setBase(Attributes.FOLLOW_RANGE, 64.0);           // the alarm brings them from across the city
+        }
         if (isCop()) {
             boolean guard = !"cop".equals(getVariantName());
             setBase(Attributes.MAX_HEALTH, guard ? 36.0 : 30.0);
@@ -417,11 +428,12 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
         this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.OpenDoorGoal(this, true));   // and shut it after
         this.goalSelector.addGoal(1, new TradeWithPlayerGoal());
         this.goalSelector.addGoal(1, new ListenGoal());
+        this.goalSelector.addGoal(1, new EscortGoal());
         this.goalSelector.addGoal(2, new PanicGoal(this, 1.5) {
             @Override
             public boolean canUse() {
                 return !pitFighter && !isCop() && !FolkGar.isGar(FolkEntity.this)
-                        && super.canUse();   // fighters and cops stand their ground; the Gar waddles (see FolkGar)
+                        && !FolkCombat.isDogSoldier(FolkEntity.this) && super.canUse();   // fighters and cops stand their ground; the Gar waddles (see FolkGar)
             }
         });
         FolkLaw.addGoals(this, this.goalSelector, this.targetSelector);
@@ -1007,6 +1019,66 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
     }
 
     // ---- Saving -----------------------------------------------------------------
+
+    /**
+     * A Dog City guard escorting someone out: stays a couple of blocks off them on the Keep's side (so they can only go
+     * the other way), facing them, keeping pace as they go.
+     */
+    class EscortGoal extends net.minecraft.world.entity.ai.goal.Goal {
+        private int repath;
+
+        EscortGoal() {
+            this.setFlags(java.util.EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        @Nullable
+        private Player who() {
+            if (escortOf == null || escortFrom == null || level().getGameTime() > escortUntil) {
+                return null;
+            }
+            Player p = level().getPlayerByUUID(escortOf);
+            return p != null && p.isAlive() && p.distanceToSqr(FolkEntity.this) < 96 * 96 ? p : null;
+        }
+
+        @Override
+        public boolean canUse() {
+            return getTarget() == null && who() != null;
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return canUse();
+        }
+
+        @Override
+        public void stop() {
+            getNavigation().stop();
+        }
+
+        @Override
+        public void tick() {
+            Player p = who();
+            if (p == null) {
+                return;
+            }
+            getLookControl().setLookAt(p, 30.0F, 30.0F);
+            if (--this.repath > 0) {
+                return;
+            }
+            this.repath = 8;
+            net.minecraft.world.phys.Vec3 toKeep = escortFrom.subtract(p.position()).multiply(1, 0, 1);
+            toKeep = toKeep.lengthSqr() < 1.0E-4 ? new net.minecraft.world.phys.Vec3(0, 0, 1) : toKeep.normalize();
+            net.minecraft.world.phys.Vec3 side = new net.minecraft.world.phys.Vec3(-toKeep.z, 0, toKeep.x);
+            net.minecraft.world.phys.Vec3 spot = p.position().add(toKeep.scale(2.5))
+                    .add(side.scale((escortSlot - 1) * 1.6));
+            double d = distanceToSqr(spot);
+            if (d > 1.5) {
+                getNavigation().moveTo(spot.x, spot.y, spot.z, d > 64 ? 1.3 : 1.0);
+            } else {
+                getNavigation().stop();
+            }
+        }
+    }
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {

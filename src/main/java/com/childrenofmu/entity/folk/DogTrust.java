@@ -353,6 +353,26 @@ public class DogTrust extends SavedData {
     /** Where each player last stood that they were allowed to be (to send them back to). */
     private static final Map<UUID, Vec3> ALLOWED = new HashMap<>();
     private static final Map<UUID, Long> WARNED = new HashMap<>();
+    /** Each player's last attempt on the Keep, and how many in a row (a second, unheeded, gets them escorted out). */
+    private static final Map<UUID, long[]> BREACHES = new HashMap<>();
+    /** Players being walked out of a city: the city, and the Keep's middle. */
+    private record Escort(long city, Vec3 keep) {}
+    private static final Map<UUID, Escort> ESCORTS = new HashMap<>();
+    /** A city's alarm: who broke into the courtyard, until when, where the bell hangs. */
+    private static final class Alarm {
+        UUID target;
+        long until, started, lastRing;
+        @Nullable BlockPos bell;
+        Vec3 keep;
+    }
+    private static final Map<Long, Alarm> ALARMS = new HashMap<>();
+
+    private static final String[] ESCORT_LINES = {
+            "\"This way, stranger. The gate is behind you.\"",
+            "\"Keep walking. Out of the city.\"",
+            "\"You were warned. We will see you to the bridge.\"",
+            "\"No farther in. Only out.\"",
+            "\"Walk. We are in no hurry, and neither are you.\""};
 
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         if (!(event.getEntity() instanceof ServerPlayer player) || player.tickCount % 5 != 0) {
@@ -362,7 +382,9 @@ public class DogTrust extends SavedData {
             return;
         }
         ServerLevel level = player.serverLevel();
+        long now = level.getGameTime();
         StructureStart start = city(level, player.blockPosition());
+        tickEscort(level, player, start, now);
         BoundingBox keep = start == null ? null : keep(start);
         int zone = keep == null ? 0 : zone(keep, player.position());
         if (zone == 0) {
@@ -370,31 +392,170 @@ public class DogTrust extends SavedData {
             return;
         }
         int[] s = get(level).of(id(start), player.getUUID());
-        boolean ok = zone == 1 ? s[0] >= KEEP : s[0] >= KEEP && s[1] >= QUESTIONS.length;
-        if (ok) {
+        Vec3 middle = new Vec3(keep.minX() + 24.5, keep.minY() + 5, keep.minZ() + 24.5);
+        if (zone == 2 && !(s[0] >= KEEP && s[1] >= QUESTIONS.length)) {
+            // Into the courtyard without the monks' trust: the High Guard falls on them, and the monks ring the alarm.
+            alarm(level, id(start), player, middle, keep, now);
+            return;
+        }
+        if (zone == 2 || s[0] >= KEEP) {
             ALLOWED.put(player.getUUID(), player.position());
             return;
         }
-        // Turned back: to where they last stood (or out onto the terrace before the Keep's gate).
+        // Into the Keep's halls a stranger: turned back. The first time a warning; the next, an escort out of town.
         Vec3 back = ALLOWED.get(player.getUUID());
         if (back == null || zone(keep, back) >= zone) {
-            back = new Vec3(keep.minX() + 24.5, keep.minY() + 5, keep.minZ() + 24.5);
-            Vec3 out = player.position().subtract(back).multiply(1, 0, 1);
+            Vec3 out = player.position().subtract(middle).multiply(1, 0, 1);
             out = out.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, -1) : out.normalize();
-            back = back.add(out.scale(zone == 2 ? 14.0 : 21.5));
+            back = middle.add(out.scale(21.5));
         }
         player.teleportTo(back.x, back.y, back.z);
         player.setDeltaMovement(Vec3.ZERO);
+        if (now - WARNED.getOrDefault(player.getUUID(), -1000L) < 60) {
+            return;                                                       // (one turning-back at a time)
+        }
+        WARNED.put(player.getUUID(), now);
+        long[] b = BREACHES.computeIfAbsent(player.getUUID(), k -> new long[2]);
+        b[0] = now - b[1] > 6000 ? 1 : b[0] + 1;                          // a fresh start after five minutes
+        b[1] = now;
+        level.playSound(null, player.blockPosition(), SoundEvents.WOLF_GROWL, SoundSource.NEUTRAL, 0.8F, 0.9F);
+        if (b[0] <= 1) {
+            player.sendSystemMessage(Component.literal("A guard steps into your path. \"The Keep is not for strangers. "
+                    + "Be known among the folk first. Do not try it again.\" (" + Math.max(0, s[0]) + "/" + KEEP + ")")
+                    .withStyle(ChatFormatting.YELLOW));
+        } else {
+            ESCORTS.put(player.getUUID(), new Escort(id(start), middle));
+            player.sendSystemMessage(Component.literal("\"You were told.\" The guards close in around you. \"Now you "
+                    + "leave the city, and we walk with you.\"").withStyle(ChatFormatting.GOLD));
+        }
+    }
+
+    /** The guards walking someone out: picked, kept on the Keep's side of them, talking, until they're out of town. */
+    private static void tickEscort(ServerLevel level, ServerPlayer player, @Nullable StructureStart start, long now) {
+        Escort e = ESCORTS.get(player.getUUID());
+        if (e == null) {
+            return;
+        }
+        if (start == null || id(start) != e.city()) {
+            ESCORTS.remove(player.getUUID());
+            player.sendSystemMessage(Component.literal("The guards stop at the edge of the city and watch you go. "
+                    + "\"Come back when the folk know your name.\"").withStyle(ChatFormatting.GRAY));
+            return;
+        }
+        java.util.List<FolkEntity> mine = new java.util.ArrayList<>(), free = new java.util.ArrayList<>();
+        for (FolkEntity f : level.getEntitiesOfClass(FolkEntity.class, player.getBoundingBox().inflate(64))) {
+            if (!FolkCombat.isDogSoldier(f) || "high_guard".equals(f.getVariantName()) || f.getTarget() != null) {
+                continue;
+            }
+            (player.getUUID().equals(f.escortOf) && now <= f.escortUntil + 40 ? mine : free).add(f);
+        }
+        free.sort(java.util.Comparator.comparingDouble(f -> f.distanceToSqr(player)));
+        for (FolkEntity f : free) {
+            if (mine.size() >= 3) {
+                break;
+            }
+            f.escortSlot = mine.size();
+            mine.add(f);
+        }
+        FolkEntity speaker = null;
+        for (FolkEntity f : mine) {
+            f.escortOf = player.getUUID();
+            f.escortUntil = now + 60;
+            f.escortFrom = e.keep();
+            if (speaker == null || f.distanceToSqr(player) < speaker.distanceToSqr(player)) {
+                speaker = f;
+            }
+        }
+        if (speaker != null && now % 140 < 5 && speaker.distanceToSqr(player) < 20 * 20) {
+            player.sendSystemMessage(Component.literal(speaker.getDisplayName().getString() + ": "
+                    + ESCORT_LINES[(int) (now / 140 % ESCORT_LINES.length)]).withStyle(ChatFormatting.YELLOW));
+        }
+    }
+
+    /** The courtyard's alarm: the High Guard attacks; a monk runs for the bell; the soldiers come from everywhere. */
+    private static void alarm(ServerLevel level, long city, ServerPlayer player, Vec3 middle, BoundingBox keep, long now) {
+        Alarm a = ALARMS.get(city);
+        boolean fresh = a == null || now > a.until;
+        if (fresh) {
+            a = new Alarm();
+            a.started = now;
+            a.keep = middle;
+            a.bell = findBell(level, keep);
+            ALARMS.put(city, a);
+            player.sendSystemMessage(Component.literal("\"Intruder in the courtyard!\" A monk's cry goes up, and the "
+                    + "High Guard turn as one.").withStyle(ChatFormatting.RED));
+            level.playSound(null, player.blockPosition(), SoundEvents.WOLF_GROWL, SoundSource.HOSTILE, 1.5F, 0.6F);
+        }
+        a.target = player.getUUID();
+        a.until = now + 400;
+        ESCORTS.remove(player.getUUID());
+    }
+
+    @Nullable
+    private static BlockPos findBell(ServerLevel level, BoundingBox keep) {
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos();
+        for (int y = keep.minY() + 5; y <= keep.maxY(); y++) {
+            for (int x = keep.minX(); x <= keep.maxX(); x++) {
+                for (int z = keep.minZ(); z <= keep.maxZ(); z++) {
+                    if (level.getBlockState(p.set(x, y, z)).is(net.minecraft.world.level.block.Blocks.BELL)) {
+                        return p.immutable();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /** Every second while a city's alarm is up (and once more when it's over, to stand everyone down). */
+    public static void onServerTick(net.neoforged.neoforge.event.tick.ServerTickEvent.Post event) {
+        if (ALARMS.isEmpty() || event.getServer().getTickCount() % 10 != 0) {
+            return;
+        }
+        ServerLevel level = event.getServer().overworld();
         long now = level.getGameTime();
-        if (now - WARNED.getOrDefault(player.getUUID(), -1000L) > 60) {
-            WARNED.put(player.getUUID(), now);
-            String line = zone == 1
-                    ? "A guard steps into your path. \"The Keep is not for strangers. Be known among the folk first.\" ("
-                    + Math.max(0, s[0]) + "/" + KEEP + ")"
-                    : "A monk raises a paw. \"The courtyard is for those who have understood the fables.\" ("
-                    + Math.min(s[1], QUESTIONS.length) + "/" + QUESTIONS.length + " answered)";
-            player.sendSystemMessage(Component.literal(line).withStyle(ChatFormatting.YELLOW));
-            level.playSound(null, player.blockPosition(), SoundEvents.WOLF_GROWL, SoundSource.NEUTRAL, 0.7F, 0.9F);
+        java.util.Iterator<Map.Entry<Long, Alarm>> it = ALARMS.entrySet().iterator();
+        while (it.hasNext()) {
+            Alarm a = it.next().getValue();
+            ServerPlayer target = level.getServer().getPlayerList().getPlayer(a.target);
+            boolean over = now > a.until || target == null || !target.isAlive() || target.isCreative()
+                    || target.level() != level;
+            net.minecraft.world.phys.AABB area = new net.minecraft.world.phys.AABB(a.keep, a.keep).inflate(110, 40, 110);
+            FolkEntity ringer = null;
+            for (FolkEntity f : level.getEntitiesOfClass(FolkEntity.class, area)) {
+                if (FolkCombat.isDogSoldier(f)) {
+                    if (over) {
+                        if (f.getTarget() != null && f.getTarget().getUUID().equals(a.target)) {
+                            f.setTarget(null);                            // stand down
+                        }
+                    } else if (f.getTarget() == null && ("high_guard".equals(f.getVariantName())
+                            || now - a.started > 60)) {
+                        f.setTarget(target);                              // the High Guard at once, the rest as they hear
+                    }
+                } else if (!over && a.bell != null && ("monk".equals(f.getVariantName())
+                        || "husky_monk".equals(f.getVariantName()))
+                        && (ringer == null || f.distanceToSqr(a.bell.getCenter()) < ringer.distanceToSqr(a.bell.getCenter()))) {
+                    ringer = f;
+                }
+            }
+            if (over) {
+                it.remove();
+                continue;
+            }
+            if (a.bell != null) {
+                // The nearest monk runs for the bell; it rings once he's there (or anyway, after a few seconds).
+                boolean there = ringer != null && ringer.distanceToSqr(a.bell.getCenter()) < 5 * 5;
+                if (ringer != null && !there) {
+                    ringer.getNavigation().moveTo(a.bell.getX() + 0.5, a.bell.getY() - 2, a.bell.getZ() + 0.5, 1.4);
+                }
+                if ((there || now - a.started > 100) && now - a.lastRing >= 30) {
+                    a.lastRing = now;
+                    net.minecraft.world.level.block.state.BlockState bell = level.getBlockState(a.bell);
+                    if (bell.getBlock() instanceof net.minecraft.world.level.block.BellBlock bb) {
+                        bb.attemptToRing(ringer, level, a.bell, null);
+                    }
+                    level.playSound(null, a.bell, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 3.0F, 0.8F);
+                }
+            }
         }
     }
 }

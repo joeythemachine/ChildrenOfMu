@@ -133,11 +133,17 @@ Python, no dependencies. Stage the save's region files from the laptop first.
   right-click a dog with something it values, one a day per dog) and hostile mob kills (+1); killing a dog -40.
   30 opens the Keep's halls. The monks (sneak to trade with them) ask 5 questions answerable only from the 5 fables
   on the library lecterns (`FABLES` in make_dog_city.py, `QUESTIONS/ANSWERS/RIGHT` in DogTrust - keep them in step);
-  a wrong answer restarts and makes them wait a minute. All 5 opens the courtyard. Guards turn players back
-  (teleport to last allowed spot), never attack.
+  a wrong answer restarts and makes them wait a minute. All 5 opens the courtyard.
+- **Keep halls without confidence:** turned back with a warning; a second try within 5 minutes and up to 3 soldiers
+  escort them (FolkEntity `EscortGoal`: stand between the player and the Keep, talk) until they leave the city.
+  **Courtyard without the monks' trust:** an alarm (`DogTrust.onServerTick`): High Guards attack at once, the nearest
+  monk runs to the Keep's bell and rings it, every soldier in the city joins after 3 s; stands down 20 s after the
+  intruder leaves the Keep (or dies). Dog soldiers have melee (archers shoot), fight back, never panic.
 - Dark tower: solid base, door 4 up in a blackstone portal, a stair up to it in the Keep template; the spiral turns
   on flat corner landings (corner *stairs* in a 1-wide well became outer-shaped lips and couldn't be climbed).
 - Every dog has a bed except the Biters. Dog variants for the trades, plus `pikeman`, `biter`, `bandaged`
   (not random, don't trade).
 - Round 2 (to do): guards (High Guards) warn then attack near/in the dark tower; Biters stay in the kennel; killing the bandaged
-  dog: scream, Biters released, every dog turns rabid, permanently (world saved data).
+  dog: scream, Biters released, every dog turns rabid, permanently (world saved data). **After one night of the
+  curse, every dog folk turns into a vanilla wolf** (owner, 2026-10-28).
+- Later: swords, pikes and bows from other weapon mods for the soldiers (owner wants this once the basics work).

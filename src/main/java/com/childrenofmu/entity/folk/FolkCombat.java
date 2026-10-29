@@ -34,9 +34,20 @@ public final class FolkCombat {
         return e.getRace() == FolkRace.FROG && "guard".equals(e.getVariantName());
     }
 
-    /** A Cat city archer: keeps the law like any guard, but from a distance, with a bow. */
+    /** A Cat city archer (or a Dog City bowman): fights from a distance, with a bow. */
     static boolean isArcher(FolkEntity e) {
-        return e.getRace() == FolkRace.CAT && "archer".equals(e.getVariantName());
+        return (e.getRace() == FolkRace.CAT || e.getRace() == FolkRace.DOG) && "archer".equals(e.getVariantName());
+    }
+
+    /** Dog City's soldiers: the samurai, the pikemen, the bowmen and the High Guard. */
+    public static boolean isDogSoldier(FolkEntity e) {
+        if (e.getRace() != FolkRace.DOG) {
+            return false;
+        }
+        return switch (e.getVariantName()) {
+            case "samurai", "pikeman", "archer", "high_guard" -> true;
+            default -> false;
+        };
     }
 
     /** Grown frogs with ordinary jobs hunt small slimes. */
@@ -75,10 +86,17 @@ public final class FolkCombat {
                 return !e.yielded && super.canContinueToUse();
             }
         });
+        // Dog soldiers close with the blade or the pike (and don't give up the chase at their posts' bounds).
+        goals.addGoal(2, new MeleeAttackGoal(e, 1.25, false) {
+            @Override
+            public boolean canUse() {
+                return isDogSoldier(e) && !isArcher(e) && super.canUse();
+            }
+        });
         targets.addGoal(1, new HurtByTargetGoal(e) {
             @Override
             public boolean canUse() {
-                return isGuard(e) && super.canUse();
+                return (isGuard(e) || isDogSoldier(e)) && super.canUse();
             }
         });
         targets.addGoal(2, new NearestAttackableTargetGoal<>(e, Mob.class, 10, true, false,
