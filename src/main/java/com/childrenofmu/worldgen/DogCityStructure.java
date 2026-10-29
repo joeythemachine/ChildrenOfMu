@@ -171,6 +171,15 @@ public class DogCityStructure extends Structure {
             }
         }
 
+        // ---- The farmsteads in the four outer corners, among the fields: a tool hut and a paddock, facing the city.
+        for (int sx : new int[]{-1, 1}) {
+            for (int sz : new int[]{-1, 1}) {
+                pieces.add(new IthkBuildingPiece(manager, id("dc_farmstead"),
+                        at.apply(new int[]{sx * DogFarmPiece.STEAD_AT, sz * DogFarmPiece.STEAD_AT}, null),
+                        (sz > 0 ? Rotation.NONE : Rotation.CLOCKWISE_180).getRotated(turned), 0, true, -1, 1));
+            }
+        }
+
         // ---- The ground, leveled all over (and out past the moat), first of all.
         int[] ring = new int[STAR.length * 2];
         for (int i = 0; i < STAR.length; i++) {
@@ -201,6 +210,7 @@ public class DogCityStructure extends Structure {
         pieces.add(new DogCornerPiece(ground + CityWallPiece.HEIGHT - 1, ring, points, keepOut));
         // ---- The moat outside it, bridged at the gate; and last, the roads (only over open ground).
         pieces.add(new DogMoatPiece(cx, cz, cy, k, ring));
+        pieces.add(new DogFarmPiece(cx, cz, cy, k, ring));
         pieces.add(new DogGroundPiece(cx, cz, cy, k));
         return Optional.of(new GenerationStub(new BlockPos(cx, cy, cz), (StructurePiecesBuilder b) -> pieces.forEach(b::addPiece)));
     }

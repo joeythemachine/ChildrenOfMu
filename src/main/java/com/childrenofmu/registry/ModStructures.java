@@ -74,6 +74,9 @@ public final class ModStructures {
     public static final DeferredHolder<StructurePieceType, StructurePieceType> DOG_CORNER_PIECE =
             PIECE_TYPES.register("dog_corner", () -> (StructurePieceType.ContextlessType) com.childrenofmu.worldgen.DogCornerPiece::new);
 
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> DOG_FARM_PIECE =
+            PIECE_TYPES.register("dog_farm", () -> (StructurePieceType.ContextlessType) com.childrenofmu.worldgen.DogFarmPiece::new);
+
     public static final DeferredHolder<StructurePieceType, StructurePieceType> SKYWALK_PIECE =
             PIECE_TYPES.register("skywalk", () -> (StructurePieceType.ContextlessType) com.childrenofmu.worldgen.SkywalkPiece::new);
 

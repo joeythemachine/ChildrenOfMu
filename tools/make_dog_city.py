@@ -238,7 +238,7 @@ def f_kitchen(B):
     B.put(3, 1, 3, "minecraft:smoker", {"facing": "east", "lit": "false"})
     for z in (5, 6):
         B.table(9, 1, z)
-    B.stocked_barrel(10, 1, 2, [("minecraft:bread", 16), ("minecraft:baked_potato", 16)])
+    B.stocked_barrel(10, 1, 2, [("minecraft:cooked_beef", 16), ("minecraft:cooked_porkchop", 16)])
 
 
 # ---------------------------------------------------------------- meals, music, school
@@ -249,7 +249,7 @@ def f_mess_hall(B):
             B.bench(x - 1, 1, z, "east")
             B.bench(x + 1, 1, z, "west")
     B.put(2, 1, 9, "minecraft:smoker", {"facing": "east", "lit": "false"})
-    B.stocked_barrel(10, 1, 2, [("minecraft:bread", 32), ("minecraft:cooked_beef", 16)])
+    B.stocked_barrel(10, 1, 2, [("minecraft:cooked_mutton", 32), ("minecraft:cooked_beef", 16)])
 
 
 def f_music_hall(B):
@@ -665,10 +665,60 @@ def keep():
     return B
 
 
+# ---------------------------------------------------------------- the farmsteads outside the walls
+def farmstead():
+    """
+    Seventeen square, out among the wheat terraces (front -z toward the city): a little stone tool hut in one corner
+    with the farmhand's bed, and the rest a fenced paddock for the cattle, horses and hens the wheat is grown for.
+    """
+    B = DogBuilder(17, 901)
+    for x in range(1, 16):
+        for z in range(1, 16):
+            B.put(x, 0, z, "minecraft:grass_block", {"snowy": "false"})
+    # The hut.
+    B.floor(1, 7, 1, 7, 0, PLINTH)
+    B.floor(2, 6, 2, 6, 0, FLOOR)
+    B.stone_storey(1, 7, 1, 7, 1, 3, windows=True)
+    B.hip_roof(1, 7, 1, 7, 4)
+    B.door(4, 1, 1, "south", kind="dark_oak_door")
+    B.put(4, 0, 0, PLINTH)
+    B.bracket_lantern(2, 3, 0, "north")
+    B.bed(2, 1, 5, "south", "brown")
+    B.stocked_barrel(6, 1, 2, [("minecraft:iron_hoe", 2), ("minecraft:shears", 1), ("minecraft:bucket", 2),
+                                ("minecraft:wheat_seeds", 32), ("minecraft:lead", 2)])
+    B.put(6, 1, 4, "minecraft:grindstone", {"face": "floor", "facing": "north"})
+    B.put(6, 1, 6, "minecraft:composter", {"level": "3"})
+    B.put(4, 1, 6, "minecraft:hay_block", {"axis": "y"})
+    B.put(4, 3, 4, "minecraft:lantern", {"hanging": "true", "waterlogged": "false"})
+    B.dog(3, 1, 3, "stablemaster", stay=6)
+    # The paddock: fenced round, a gate toward the city, hay, a trough.
+    for i in range(1, 16):
+        if i >= 8:
+            B.fence(i, 1, 1, "minecraft:spruce_fence")
+            B.fence(1, 1, i, "minecraft:spruce_fence")
+        B.fence(15, 1, i, "minecraft:spruce_fence")
+        B.fence(i, 1, 15, "minecraft:spruce_fence")
+    B.put(12, 1, 1, "minecraft:spruce_fence_gate", {"facing": "south", "in_wall": "false", "open": "false",
+                                                    "powered": "false"})
+    for (x, z) in ((13, 13), (13, 12), (12, 13)):
+        B.put(x, 1, z, "minecraft:hay_block", {"axis": "y"})
+    B.put(13, 2, 13, "minecraft:hay_block", {"axis": "y"})
+    for x in (9, 10):
+        B.put(x, 1, 14, "minecraft:water_cauldron", {"level": "3"})
+    for (x, z) in ((10, 4), (12, 7), (4, 11)):
+        B.animal(x, 1, z, "cow")
+    for (x, z, v) in ((11, 10, 3), (6, 13, 257)):
+        B.animal(x, 1, z, "horse", Variant=v)
+    for (x, z) in ((13, 4), (9, 9), (3, 10), (7, 10)):
+        B.animal(x, 1, z, "chicken")
+    B.finish()
+    return B
+
+
 # ---------------------------------------------------------------- the fables of the Keep
 FABLES = [
     ["The First Fable:\nThe Three Bowls\n\nOld Brother Ashe set three bowls before his pupils. One was gold, and full of "
-     "clear water. One was oak, and heaped with rice. One was clay, and held nothing at all.",
+     "clear water. One was oak, and heaped with meat. One was clay, and held nothing at all.",
      "\"Take one,\" he said, \"and it is yours for life.\"\n\nThe proud pup took the gold, and was thirsty ever after, "
      "for he would not drink and spoil its shine.",
      "The hungry pup took the oak, and ate, and was hungry again by evening, and the bowl was empty.\n\nThe last pup "
@@ -811,6 +861,7 @@ def main():
     out["dc_gatehouse"] = gatehouse()
     out["dc_keep"] = keep()
     out["dc_dark_tower"] = dark_tower()
+    out["dc_farmstead"] = farmstead()
     for name, B in out.items():
         n, p, top, mods = B.save_pair(os.path.join(DIR, name))
         dogs = sum(1 for e in B.entities if e[3].get("id") == "childrenofmu:dog_folk")

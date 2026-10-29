@@ -96,6 +96,10 @@ public final class FolkCombat {
         targets.addGoal(1, new HurtByTargetGoal(e) {
             @Override
             public boolean canUse() {
+                if (e.companionOf != null && e.getLastHurtByMob() instanceof net.minecraft.world.entity.player.Player p
+                        && p.getUUID().equals(e.companionOf)) {
+                    return false;                                 // a slip of their own companion's: forgiven
+                }
                 return (isGuard(e) || isDogSoldier(e)) && super.canUse();
             }
         });

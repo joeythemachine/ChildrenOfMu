@@ -293,16 +293,17 @@ public final class FolkTrades {
                 sells("minecraft:cooked_mutton", 4, 6), costs("farmersdelight:minced_beef", 4, 1, 2),
                 costs("farmersdelight:ham", 1, 3, 4), buys("minecraft:beef", 12, 16),
                 buys("minecraft:porkchop", 12, 16), buys("minecraft:coal", 15, 20)));
+        // (Dog folk eat meat and nothing else: their cooks and servers deal in flesh, bone and broth.)
         POOLS.put("dog_cook", List.of(
-                sells("minecraft:bread", 4, 6), sells("minecraft:mushroom_stew", 1, 1),
-                sells("minecraft:rabbit_stew", 1, 1), costs("farmersdelight:beef_stew", 1, 2, 3),
-                costs("farmersdelight:fried_rice", 1, 2, 3), costs("farmersdelight:dumplings", 2, 2, 3),
-                buys("minecraft:carrot", 20, 24), buys("minecraft:potato", 20, 24)));
+                sells("minecraft:cooked_beef", 4, 6), sells("minecraft:cooked_chicken", 4, 6),
+                costs("farmersdelight:bone_broth", 1, 2, 3), costs("farmersdelight:roasted_mutton_chops", 2, 2, 3),
+                costs("farmersdelight:smoked_ham", 1, 3, 4), costs("farmersdelight:beef_patty", 3, 1, 2),
+                buys("minecraft:beef", 12, 16), buys("minecraft:chicken", 12, 16), buys("minecraft:bone", 16, 20)));
         POOLS.put("dog_server", List.of(
-                sells("minecraft:bread", 4, 6), sells("minecraft:baked_potato", 6, 8),
-                sells("minecraft:pumpkin_pie", 2, 3), costs("minecraft:cake", 1, 2, 3),
-                costs("farmersdelight:cabbage_rolls", 2, 2, 3), sells("minecraft:milk_bucket", 1, 1),
-                buys("minecraft:sweet_berries", 20, 24)));
+                sells("minecraft:cooked_porkchop", 4, 6), sells("minecraft:cooked_mutton", 4, 6),
+                sells("minecraft:cooked_rabbit", 3, 5), costs("farmersdelight:cooked_bacon", 4, 1, 2),
+                costs("farmersdelight:roast_chicken", 1, 3, 4), costs("farmersdelight:honey_glazed_ham", 1, 3, 4),
+                buys("minecraft:porkchop", 12, 16), buys("minecraft:rabbit", 8, 12)));
         POOLS.put("dog_musician", List.of(
                 costs("minecraft:note_block", 1, 2, 3), costs("minecraft:jukebox", 1, 8, 10),
                 costs("minecraft:music_disc_cat", 1, 10, 14), costs("minecraft:music_disc_far", 1, 10, 14),

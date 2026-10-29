@@ -162,17 +162,18 @@ public class DogTrust extends SavedData {
 
     /** What a gift is worth to a dog (0: not a gift). */
     private static int giftValue(ItemStack stack) {
-        if (stack.is(Items.BONE) || stack.is(Items.BREAD) || stack.is(ItemTags.WOOL) || stack.is(Items.STRING)
+        // Meat, bone, and the things of their crafts (never bread, cake or fruit: Dog folk eat only meat).
+        if (stack.is(Items.BONE) || stack.is(Items.CHICKEN) || stack.is(Items.RABBIT) || stack.is(ItemTags.WOOL) || stack.is(Items.STRING)
                 || stack.is(Items.LEATHER) || stack.is(Items.BEEF) || stack.is(Items.PORKCHOP) || stack.is(Items.MUTTON)) {
             return 1;
         }
         if (stack.is(Items.COOKED_BEEF) || stack.is(Items.COOKED_PORKCHOP) || stack.is(Items.COOKED_MUTTON)
+                || stack.is(Items.COOKED_CHICKEN) || stack.is(Items.COOKED_RABBIT)
                 || stack.is(Items.EMERALD) || stack.is(Items.BOOK) || stack.is(Items.LAPIS_LAZULI)
                 || stack.is(Items.IRON_INGOT) || stack.getItem() instanceof net.minecraft.world.item.DyeItem) {
             return 2;
         }
-        if (stack.is(Items.RABBIT_STEW) || stack.is(Items.GOLD_INGOT) || stack.is(Items.GOLDEN_CARROT)
-                || stack.is(Items.CAKE) || stack.is(Items.DIAMOND) || stack.is(Items.ENCHANTED_BOOK)) {
+        if (stack.is(Items.GOLD_INGOT) || stack.is(Items.DIAMOND) || stack.is(Items.ENCHANTED_BOOK)) {
             return 4;
         }
         return 0;
@@ -214,6 +215,13 @@ public class DogTrust extends SavedData {
             }
             return InteractionResult.sidedSuccess(client);
         }
+        // The soldiers: they don't trade, but one the monks trust may ask them to march with them.
+        if ("samurai".equals(v) || "pikeman".equals(v) || "archer".equals(v)) {
+            if (!client && player instanceof ServerPlayer sp) {
+                recruit(sp, dog);
+            }
+            return InteractionResult.sidedSuccess(client);
+        }
         // The monks of the Keep: their questions (sneak to trade with them instead).
         if (("monk".equals(v) || "husky_monk".equals(v))) {
             if (client) {
@@ -234,6 +242,53 @@ public class DogTrust extends SavedData {
             return InteractionResult.SUCCESS;
         }
         return null;
+    }
+
+    // ---------------------------------------------------------------- soldiers who march with you
+
+    static final int COMPANIONS = 2;
+
+    private static void recruit(ServerPlayer player, FolkEntity soldier) {
+        String name = soldier.getDisplayName().getString();
+        if (player.getUUID().equals(soldier.companionOf)) {
+            if (player.isSecondaryUseActive()) {
+                soldier.joinCompanion(null);
+                player.sendSystemMessage(Component.literal(name + " salutes. \"Then I return to my post. Call on me "
+                        + "again, brother.\""));
+            } else {
+                player.sendSystemMessage(Component.literal(name + ": \"I am with you.\" (Sneak and speak to send me "
+                        + "home.)").withStyle(ChatFormatting.GRAY));
+            }
+            return;
+        }
+        if (soldier.companionOf != null) {
+            player.sendSystemMessage(Component.literal(name + " is sworn to march with another."));
+            return;
+        }
+        StructureStart start = city(player.serverLevel(), soldier.blockPosition());
+        int[] s = start == null ? null : get(player.serverLevel()).of(id(start), player.getUUID());
+        if (s == null || s[0] < KEEP || s[1] < QUESTIONS.length) {
+            player.sendSystemMessage(Component.literal(name + " stands at ease and does not trade. \"I serve the city. "
+                    + "Should the monks ever call you brother, I would march with you.\""));
+            return;
+        }
+        int have = 0;
+        for (FolkEntity f : player.serverLevel().getEntitiesOfClass(FolkEntity.class, player.getBoundingBox().inflate(160))) {
+            if (player.getUUID().equals(f.companionOf)) {
+                have++;
+            }
+        }
+        if (have >= COMPANIONS) {
+            player.sendSystemMessage(Component.literal(name + " looks at the soldiers already at your side. \"You "
+                    + "have company enough. The city cannot spare more.\""));
+            return;
+        }
+        soldier.joinCompanion(player);
+        soldier.setTarget(null);
+        soldier.escortOf = null;
+        player.sendSystemMessage(Component.literal(name + " bows. \"The monks call you brother. Where you go, I go.\"")
+                .withStyle(ChatFormatting.GOLD));
+        soldier.playSound(SoundEvents.WOLF_AMBIENT, 0.8F, 0.9F);
     }
 
     // ---------------------------------------------------------------- the monks' questions
@@ -444,7 +499,8 @@ public class DogTrust extends SavedData {
         }
         java.util.List<FolkEntity> mine = new java.util.ArrayList<>(), free = new java.util.ArrayList<>();
         for (FolkEntity f : level.getEntitiesOfClass(FolkEntity.class, player.getBoundingBox().inflate(64))) {
-            if (!FolkCombat.isDogSoldier(f) || "high_guard".equals(f.getVariantName()) || f.getTarget() != null) {
+            if (!FolkCombat.isDogSoldier(f) || "high_guard".equals(f.getVariantName()) || f.getTarget() != null
+                    || f.companionOf != null) {
                 continue;
             }
             (player.getUUID().equals(f.escortOf) && now <= f.escortUntil + 40 ? mine : free).add(f);
@@ -522,7 +578,7 @@ public class DogTrust extends SavedData {
             net.minecraft.world.phys.AABB area = new net.minecraft.world.phys.AABB(a.keep, a.keep).inflate(110, 40, 110);
             FolkEntity ringer = null;
             for (FolkEntity f : level.getEntitiesOfClass(FolkEntity.class, area)) {
-                if (FolkCombat.isDogSoldier(f)) {
+                if (FolkCombat.isDogSoldier(f) && f.companionOf == null) {
                     if (over) {
                         if (f.getTarget() != null && f.getTarget().getUUID().equals(a.target)) {
                             f.setTarget(null);                            // stand down

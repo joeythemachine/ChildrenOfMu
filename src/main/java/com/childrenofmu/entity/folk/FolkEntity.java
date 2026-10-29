@@ -77,6 +77,8 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
     long escortUntil;
     int escortSlot;
     @Nullable net.minecraft.world.phys.Vec3 escortFrom;     // the Keep's middle: the guard keeps between it and them
+    /** A Dog City soldier marching with a player (one the monks trust): who. */
+    @Nullable java.util.UUID companionOf;
     /** Set when the save (or a template) already gave this one a size. */
     private boolean sizePreset;
     /** Set when a structure or command chose the variant, so spawning doesn't pick another. */
@@ -429,6 +431,7 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
         this.goalSelector.addGoal(1, new TradeWithPlayerGoal());
         this.goalSelector.addGoal(1, new ListenGoal());
         this.goalSelector.addGoal(1, new EscortGoal());
+        this.goalSelector.addGoal(1, new FollowCompanionGoal());
         this.goalSelector.addGoal(2, new PanicGoal(this, 1.5) {
             @Override
             public boolean canUse() {
@@ -747,6 +750,21 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
         if (this.race == FolkRace.FROG && "froglet".equals(getVariantName())) {
             FolkRest.tickSchool(this);
         }
+        if (this.companionOf != null && getTarget() == null && (this.tickCount & 7) == 0) {
+            // A companion takes up its player's fights: whoever hurts them, and whatever they strike.
+            Player p = companion();
+            if (p != null) {
+                net.minecraft.world.entity.LivingEntity foe = p.getLastHurtByMob();
+                if (foe == null || this.tickCount - p.getLastHurtByMobTimestamp() > 200) {
+                    foe = this.tickCount - p.getLastHurtMobTimestamp() < 100 ? p.getLastHurtMob() : null;
+                }
+                if (foe != null && foe.isAlive() && foe != this && !(foe instanceof FolkEntity)
+                        && !(foe instanceof net.minecraft.world.entity.TamableAnimal t && t.isTame())
+                        && !(foe instanceof Player) && foe.distanceToSqr(this) < 24 * 24) {
+                    setTarget(foe);
+                }
+            }
+        }
         if (this.level() instanceof net.minecraft.server.level.ServerLevel server) {
             if (isBaby() && server.getGameTime() >= this.growAt) {
                 // Grown up, and into the job.
@@ -1020,6 +1038,79 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
 
     // ---- Saving -----------------------------------------------------------------
 
+    /** Join a player on their adventure (no more keeping to the city), or leave them and go home. */
+    void joinCompanion(@Nullable Player player) {
+        this.companionOf = player == null ? null : player.getUUID();
+        if (player != null) {
+            this.clearRestriction();
+            this.setPersistenceRequired();
+        } else if (this.home != null) {
+            this.restrictTo(this.home, this.homeRadius);
+        }
+    }
+
+    @Nullable
+    Player companion() {
+        return this.companionOf == null ? null : this.level().getPlayerByUUID(this.companionOf);
+    }
+
+    /**
+     * A companion keeps near its player like a sworn retainer: walks after them, catches up (by any means) when left far
+     * behind, and stands by them when close. It holds the folk's movement, so work, beds and posts don't call it away.
+     */
+    class FollowCompanionGoal extends net.minecraft.world.entity.ai.goal.Goal {
+        private int repath;
+
+        FollowCompanionGoal() {
+            this.setFlags(java.util.EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            Player p = companion();
+            return p != null && p.level() == level() && getTarget() == null && !p.isSpectator();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return canUse();
+        }
+
+        @Override
+        public void tick() {
+            Player p = companion();
+            if (p == null) {
+                return;
+            }
+            double d = distanceToSqr(p);
+            if (d < 36) {
+                getLookControl().setLookAt(p, 20.0F, 20.0F);
+            }
+            if (d > 32 * 32) {
+                // Left far behind: catch up at the player's side, on solid ground.
+                for (int i = 0; i < 12; i++) {
+                    net.minecraft.core.BlockPos at = p.blockPosition().offset(random.nextInt(7) - 3, random.nextInt(3) - 1,
+                            random.nextInt(7) - 3);
+                    if (level().getBlockState(at.below()).isSolidRender(level(), at.below())
+                            && level().getBlockState(at).isAir() && level().getBlockState(at.above()).isAir()) {
+                        teleportTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
+                        getNavigation().stop();
+                        return;
+                    }
+                }
+            }
+            if (--this.repath > 0) {
+                return;
+            }
+            this.repath = 10;
+            if (d > 5 * 5) {
+                getNavigation().moveTo(p, d > 12 * 12 ? 1.35 : 1.1);
+            } else {
+                getNavigation().stop();
+            }
+        }
+    }
+
     /**
      * A Dog City guard escorting someone out: stays a couple of blocks off them on the Keep's side (so they can only go
      * the other way), facing them, keeping pace as they go.
@@ -1085,6 +1176,9 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
         super.addAdditionalSaveData(tag);
         tag.putString("Variant", getVariantName());
         tag.putFloat("Size", getSize());
+        if (this.companionOf != null) {
+            tag.putUUID("CompanionOf", this.companionOf);
+        }
         if (this.shop != null) {
             tag.putString("Shop", this.shop);
         }
@@ -1133,6 +1227,9 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
                 this.setItemSlot(EquipmentSlot.MAINHAND, this.race.heldItem(getVariantName()));
             }
         }
+        if (tag.hasUUID("CompanionOf")) {
+            this.companionOf = tag.getUUID("CompanionOf");
+        }
         if (tag.contains("Size")) {
             this.entityData.set(SIZE, tag.getFloat("Size"));
             this.sizePreset = true;
@@ -1174,6 +1271,9 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
             this.home = new net.minecraft.core.BlockPos(home[0], home[1], home[2]);
             this.homeRadius = tag.contains("HomeRadius") ? tag.getInt("HomeRadius") : HOMEBODY_RADIUS;
             this.restrictTo(this.home, this.homeRadius);
+        }
+        if (this.companionOf != null) {
+            this.clearRestriction();                                      // off adventuring with someone
         }
         if (tag.contains("Offers")) {
             MerchantOffers.CODEC.parse(this.registryAccess().createSerializationContext(NbtOps.INSTANCE), tag.get("Offers"))

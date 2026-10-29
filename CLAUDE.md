@@ -141,6 +141,16 @@ Python, no dependencies. Stage the save's region files from the laptop first.
   intruder leaves the Keep (or dies). Dog soldiers have melee (archers shoot), fight back, never panic.
 - Dark tower: solid base, door 4 up in a blackstone portal, a stair up to it in the Keep template; the spiral turns
   on flat corner landings (corner *stairs* in a 1-wide well became outer-shaped lips and couldn't be climbed).
+- **Outside the walls** (`DogFarmPiece`, after the moat): wheat terraces following the star outward, a step down
+  every 7 blocks (max 3), risers faced in stone brick with andesite kerbs, a 9-grid of paths (stair steps where they
+  climb a riser), a water hole per field, the road out from the bridge level, a stone rim round the cleared ground
+  and the farmsteads; everything above the fields is cleared (no floating rocks). Four `dc_farmstead`s in the outer
+  corners (plan +-82): tool hut + bed + stablemaster, paddock with cows, horses, chickens.
+- **Dog folk are strictly carnivorous**: no bread, vegetables, cake or fruit in their trades, gifts or stores
+  (wheat is for the animals).
+- **Soldiers (samurai, pikemen, bowmen) don't trade.** With the monks' trust a player can recruit up to 2
+  (right-click; sneak + right-click sends them home): they follow (teleport when far), fight what attacks the player
+  or what the player strikes, forgive the player's own slips; `companionOf` is saved.
 - Every dog has a bed except the Biters. Dog variants for the trades, plus `pikeman`, `biter`, `bandaged`
   (not random, don't trade).
 - Round 2 (to do): guards (High Guards) warn then attack near/in the dark tower; Biters stay in the kennel; killing the bandaged

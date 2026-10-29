@@ -112,7 +112,8 @@ public enum FolkRace {
     public boolean tradesAs(String variant) {
         return switch (variant) {
             case "cop", "bookie", "gar", "biter", "bandaged", "pikeman", "high_guard" -> false;
-            case "archer" -> this != CAT && this.trades;
+            case "samurai" -> this != DOG && this.trades;    // Dog City's soldiers don't trade (they may march with you)
+            case "archer" -> this != CAT && this != DOG && this.trades;
             case "guard" -> this != CAT && this.trades;
             default -> this.trades;
         };
@@ -144,7 +145,7 @@ public enum FolkRace {
             case "weaver", "tailor" -> new ItemStack(Items.STRING);
             case "dyer" -> new ItemStack(Items.BLUE_DYE);
             case "tanner" -> new ItemStack(Items.LEATHER);
-            case "server" -> new ItemStack(Items.BREAD);
+            case "server" -> new ItemStack(Items.COOKED_BEEF);
             case "musician" -> new ItemStack(Items.GOAT_HORN);
             case "teacher" -> new ItemStack(Items.WRITABLE_BOOK);
             case "fishmonger" -> new ItemStack(Items.COD);
