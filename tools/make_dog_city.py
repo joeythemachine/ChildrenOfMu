@@ -34,10 +34,10 @@ def workshop(seed, sign, workers, beds, furnish, floor_mat=FLOOR):
     B.timber_storey(X0, X1, Z0, Z1, 5, 8)
     B.floor(X0 + 1, X1 - 1, Z0 + 1, Z1 - 1, 5, FLOOR)
     B.hip_roof(X0, X1, Z0, Z1, 9)
-    # The door, a step, a lamp each side and the trade's sign.
+    # The door, its threshold, a lamp each side and the trade's sign.
     B.door(C, 1, Z0, "south", kind="dark_oak_door")
     B.put(C, 3, Z0, "minecraft:chiseled_stone_bricks")
-    B.stair(C, 0, Z0 - 1, "minecraft:stone_brick_stairs", "south")
+    B.put(C, 0, Z0 - 1, PLINTH)                       # a threshold, flush with the road
     for x in (C - 2, C + 2):
         B.bracket_lantern(x, 3, Z0 - 1, "north")
     B.street_sign(C + 1, Z0, 2, sign, wood="dark_oak")
@@ -339,7 +339,7 @@ def tower(seed, kind):
     B.hip_roof(a0, a1, a0, a1, 15)
     B.door(c, 1, a0, "south", kind="dark_oak_door")
     B.put(c, 3, a0, "minecraft:chiseled_stone_bricks")
-    B.stair(c, 0, a0 - 1, "minecraft:stone_brick_stairs", "south")
+    B.put(c, 0, a0 - 1, PLINTH)                       # a threshold, flush with the road
     B.bracket_lantern(c - 2, 3, a0 - 1, "north")
     B.bracket_lantern(c + 2, 3, a0 - 1, "north")
     B.ladder(a1 - 2, a1 - 1, 1, 14, "north")
