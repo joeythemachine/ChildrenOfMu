@@ -1,0 +1,33 @@
+{
+  "placement": {
+    "type": "childrenofmu:avoiding_spread",
+    "salt": 10387319,
+    "separation": 20,
+    "spacing": 80,
+    "spread_type": "triangular",
+    "avoid": [
+      {
+        "set": "childrenofmu:dog_city",
+        "chunk_count": 10
+      },
+      {
+        "set": "childrenofmu:rcb_city",
+        "chunk_count": 10
+      },
+      {
+        "set": "childrenofmu:frog_town",
+        "chunk_count": 7
+      },
+      {
+        "set": "childrenofmu:amethyst_tower",
+        "chunk_count": 7
+      }
+    ]
+  },
+  "structures": [
+    {
+      "structure": "minecraft:mansion",
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "placement": {
+    "type": "childrenofmu:avoiding_spread",
+    "salt": 14357619,
+    "separation": 8,
+    "spacing": 32,
+    "avoid": [
+      {
+        "set": "childrenofmu:dog_city",
+        "chunk_count": 8
+      },
+      {
+        "set": "childrenofmu:rcb_city",
+        "chunk_count": 8
+      },
+      {
+        "set": "childrenofmu:frog_town",
+        "chunk_count": 5
+      },
+      {
+        "set": "childrenofmu:amethyst_tower",
+        "chunk_count": 5
+      }
+    ]
+  },
+  "structures": [
+    {
+      "structure": "minecraft:jungle_pyramid",
+      "weight": 1
+    }
+  ]
+}

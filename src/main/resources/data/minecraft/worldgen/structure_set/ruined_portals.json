@@ -1,0 +1,56 @@
+{
+  "placement": {
+    "type": "childrenofmu:avoiding_spread",
+    "salt": 34222645,
+    "separation": 15,
+    "spacing": 40,
+    "avoid": [
+      {
+        "set": "childrenofmu:dog_city",
+        "chunk_count": 8
+      },
+      {
+        "set": "childrenofmu:rcb_city",
+        "chunk_count": 8
+      },
+      {
+        "set": "childrenofmu:frog_town",
+        "chunk_count": 5
+      },
+      {
+        "set": "childrenofmu:amethyst_tower",
+        "chunk_count": 5
+      }
+    ]
+  },
+  "structures": [
+    {
+      "structure": "minecraft:ruined_portal",
+      "weight": 1
+    },
+    {
+      "structure": "minecraft:ruined_portal_desert",
+      "weight": 1
+    },
+    {
+      "structure": "minecraft:ruined_portal_jungle",
+      "weight": 1
+    },
+    {
+      "structure": "minecraft:ruined_portal_swamp",
+      "weight": 1
+    },
+    {
+      "structure": "minecraft:ruined_portal_mountain",
+      "weight": 1
+    },
+    {
+      "structure": "minecraft:ruined_portal_ocean",
+      "weight": 1
+    },
+    {
+      "structure": "minecraft:ruined_portal_nether",
+      "weight": 1
+    }
+  ]
+}

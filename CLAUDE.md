@@ -88,6 +88,10 @@ Python, no dependencies. Stage the save's region files from the laptop first.
   **Avoidance must be one-way** (cities > towns > huts/outposts): two sets avoiding each other once recursed forever
   (StackOverflowError, world wouldn't load). `AvoidingSpreadPlacement.near()` now checks only the other set's grid
   candidates and never asks it about its own neighbours, but keep the lists one-way anyway.
+- Our cities don't reserve their land, so vanilla surface structures (a ruined portal once landed in Dog City) are
+  kept out by overriding their sets in `data/minecraft/worldgen/structure_set/` (ruined portals, trail ruins, igloos,
+  temples, swamp huts, mansions, shipwrecks, ocean ruins, outposts): same spacing/salt, `avoiding_spread` away from
+  our towns. Other mods' structures in the owner's pack aren't covered.
 
 ## Folk behaviour (entity/folk)
 
