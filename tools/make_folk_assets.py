@@ -141,9 +141,9 @@ def dog_parts():
         part("left_ear", (5, -8, 0), [box(0, 0, -2, 2, 10, 4, "flop")], rot=(0, 0, -8), parent="head", only=['monk', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher', 'bandaged']),
         part("right_ear", (-5, -8, 0), [box(-2, 0, -2, 2, 10, 4, "flop")], rot=(0, 0, 8), parent="head", only=['monk', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher', 'bandaged']),
         part("left_point", (3.5, -9, -0.5), [box(-1.5, -3, -0.5, 3, 3, 1, "ear"), box(-0.5, -5, -0.5, 1, 2, 1, "ear")],
-             rot=(0, 0, 6), parent="head", only=['husky_monk', 'archer', 'dyer', 'smith', 'woodcutter', 'butcher', 'musician', 'biter']),
+             rot=(0, 0, 6), parent="head", only=['husky_monk', 'archer', 'dyer', 'smith', 'woodcutter', 'butcher', 'musician', 'biter', 'high_guard']),
         part("right_point", (-3.5, -9, -0.5), [box(-1.5, -3, -0.5, 3, 3, 1, "ear"), box(-0.5, -5, -0.5, 1, 2, 1, "ear")],
-             rot=(0, 0, -6), parent="head", only=['husky_monk', 'archer', 'dyer', 'smith', 'woodcutter', 'butcher', 'musician', 'biter']),
+             rot=(0, 0, -6), parent="head", only=['husky_monk', 'archer', 'dyer', 'smith', 'woodcutter', 'butcher', 'musician', 'biter', 'high_guard']),
         # Feudal Japan: the samurai's helmet with its gold crest, the stablemaster's straw hat, the archer's quiver.
         part("kabuto", (0, 0, 0), [box(-5.5, -10.5, -4.5, 11, 3, 9, "kabuto"), box(-6, -8.5, 0, 12, 3, 5, "kabuto"),
                                    box(-3, -14, -4.6, 6, 4, 0, "crest")], parent="head", only=["samurai"]),
@@ -155,13 +155,18 @@ def dog_parts():
         part("skirt", (0, 9, 0), [box(-4.5, 0, -3, 9, 6, 6, "skirt")], parent="body"),
         part("right_arm", (-5.5, 9, 0), [box(-1.5, -1, -1.5, 3, 8, 3, "arm")]),
         part("left_arm", (5.5, 9, 0), [box(-1.5, -1, -1.5, 3, 8, 3, "arm")]),
-        part("right_sode", (0, 0, 0), [box(-2.5, -1.5, -2, 4, 4, 4, "sode")], parent="right_arm", only=["samurai"]),
-        part("left_sode", (0, 0, 0), [box(-1.5, -1.5, -2, 4, 4, 4, "sode")], parent="left_arm", only=["samurai"]),
+        part("right_sode", (0, 0, 0), [box(-2.5, -1.5, -2, 4, 4, 4, "sode")], parent="right_arm",
+             only=["samurai", "high_guard"]),
+        part("left_sode", (0, 0, 0), [box(-1.5, -1.5, -2, 4, 4, 4, "sode")], parent="left_arm",
+             only=["samurai", "high_guard"]),
+        # The High Guard of the dark tower: a sashimono on his back, a pole and crossbar flying the tower's banner.
+        part("sashimono", (0, 0, 0), [box(-0.5, -15, 3, 1, 22, 1, "pole"), box(-3.5, -15, 3, 7, 1, 1, "pole"),
+                                      box(-3, -14, 4, 6, 10, 0, "flag")], parent="body", only=["high_guard"]),
         part("right_leg", (-2, 17, 0), [box(-1.5, 0, -1.5, 3, 7, 3, "leg"), box(-1.5, 6, -2.5, 3, 1, 1, "toes")]),
         part("left_leg", (2, 17, 0), [box(-1.5, 0, -1.5, 3, 7, 3, "leg"), box(-1.5, 6, -2.5, 3, 1, 1, "toes")]),
         part("tail", (0, 15, 3), [box(-1, -1, 0, 2, 2, 4, "tail")], rot=(-30, 0, 0), only=['monk', 'stablemaster', 'weaver', 'tailor', 'shepherd', 'tanner', 'cook', 'server', 'teacher', 'bandaged']),
         part("tail_bushy", (0, 15, 3), [box(-1.5, -1.5, 0, 3, 3, 7, "tail")], rot=(-55, 0, 0),
-             only=['husky_monk', 'samurai', 'archer', 'dyer', 'smith', 'woodcutter', 'butcher', 'musician', 'pikeman', 'biter']),
+             only=['husky_monk', 'samurai', 'archer', 'dyer', 'smith', 'woodcutter', 'butcher', 'musician', 'pikeman', 'biter', 'high_guard']),
     ]
 
 
@@ -600,9 +605,47 @@ def dog_painter(pal):
             c = mix(c, (150, 120, 80), 0.45)
         return c
 
+    def tower(u, v):
+        """The dark stone tower: u across (-1..1), v down (0 top .. 1 foot). True where it's dark."""
+        if v < 0 or v > 1 or abs(u) > 0.62:
+            return False
+        if v < 0.2:
+            return int((u + 0.62) / 0.248) % 2 == 0                               # merlons
+        if v > 0.72 and abs(u) < 0.2:
+            return False                                                          # the door
+        if 0.34 < v < 0.46 and abs(u) < 0.12:
+            return False                                                          # a window slit
+        return abs(u) < (0.46 if v < 0.85 else 0.62)                              # the shaft, a broad foot
+
     def paint(p, b, face, tx, ty, pt, n):
         x, y, z = pt
         tag = b["tag"]
+        if tag == "pole":
+            return rgba(shade(fur((74, 50, 32), tx, ty, 6), FACE_LIGHT[face]))
+        if tag == "flag":
+            u, v = x / 3.0, (y + 14) / 10.0                                        # across, down the banner
+            if v > 0.9 and noise("tatter", int(x * 2), 0) < 0.45:
+                return CLEAR                                                      # a tattered foot
+            c = fur(pal["cloth"], tx, ty, 6)
+            if abs(u) > 0.8 or v < 0.06:
+                c = pal["trim"]                                                   # crimson edging
+            elif tower(u * 1.35, (v - 0.14) / 0.68):
+                c = fur(pal["emblem"], tx, ty, 4)
+            return rgba(shade(c, FACE_LIGHT[face]))
+        if pal.get("templar") and tag in ("body", "skirt") and face == "north" and abs(x) < 3.0:
+            # The tabard over the armour, the tower on the breast and again on the skirt; its hem in tatters.
+            top = 1.0 if tag == "body" else 0.0
+            if tag == "skirt" and y > 4.6 and noise("tatter", int(x * 2), 1) < 0.5:
+                return CLEAR
+            if not (tag == "body" and 6.0 < y < 7.4):
+                c = fur(pal["cloth"], tx, ty, 6)
+                if abs(x) > 2.3:
+                    c = pal["trim"]
+                elif tag == "body" and tower(x / 1.9, (y - 1.6) / 4.2):
+                    c = fur(pal["emblem"], tx, ty, 4)
+                elif tag == "skirt" and tower(x / 1.5, (y - 0.6) / 3.6):
+                    c = fur(pal["emblem"], tx, ty, 4)
+                return rgba(shade(c, FACE_LIGHT[face]))
         if pal.get("bandaged"):
             c = bandage(x, y, z, face, tx, ty)
             if tag == "head" and face == "north" and -6.0 < y < -5.0 and 1.2 < abs(x) < 3.4:
@@ -1220,6 +1263,11 @@ RACES = {
         "pikeman": dog_painter({"kind": "husky", "fur": (200, 170, 130), "light": (244, 232, 214), "pink": (214, 154, 144),
                                 "robe": (40, 60, 110), "trim": (220, 220, 210), "eye": (80, 54, 30),
                                 "armor": (40, 60, 110), "lace": (200, 200, 206), "hakama": (36, 40, 60)}),
+        "high_guard": dog_painter({"kind": "husky", "fur": (54, 40, 32), "light": (186, 136, 80),
+                                   "pink": (170, 120, 110), "robe": (52, 52, 58), "trim": (140, 30, 30),
+                                   "eye": (150, 96, 40), "armor": (50, 50, 56), "lace": (176, 140, 70),
+                                   "hakama": (42, 40, 44), "cloth": (226, 214, 188), "emblem": (34, 32, 36),
+                                   "templar": True}),
         "biter": dog_painter({"kind": "husky", "fur": (52, 46, 44), "light": (120, 110, 100), "pink": (170, 100, 100),
                               "robe": (52, 46, 44), "trim": (46, 32, 22), "eye": (226, 40, 30), "feral": True}),
         "bandaged": dog_painter({"kind": "spaniel", "fur": (222, 210, 184), "light": (222, 210, 184),

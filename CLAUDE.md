@@ -37,7 +37,8 @@ missing, or clone from GitHub once that's set up).
 2. Templates: `cd tools && python3 make_rcb_city.py` (and the other `make_*.py`) rebuild `.nbt` structures.
 3. Stage changed files under `/mnt/user-data/outputs/cofm_fixN/...` and commit them to
    `C:\MCModding\ChildrenOfMu\...` with the device commit tool (force, at most 50 files per call).
-4. List the laptop folders and check the sizes match.
+4. List the laptop folders and check the sizes match. (PNGs come out re-compressed through the outputs folder, so
+   compare a PNG's size with its *staged* copy, or its pixels, not the mirror's file.)
 
 ## Templates and the owner's edits
 
@@ -124,7 +125,19 @@ Python, no dependencies. Stage the save's region files from the laptop first.
 - **Every bedroom gets a carpet rug** (`B.rug`). **Never a ladder over a window** (`unblock_windows()` in
   `DogBuilder.finish` turns glass behind a ladder into wall). Fire under a pot is sunk into the floor.
 - `tools/worldcheck/load.py <region dir> <out.pkl> dog_city` snapshots Dog City (third arg = structure name).
+- **Dog sizes** vary 0.5x-1.5x a player (`FolkRace.dogHeight`, synced `SIZE` on FolkEntity, saved as "Size";
+  hitbox never wider than 0.9). Workshop folk <= 1.1x (2-high doors); soldiers up to ~1.35x (towers and gatehouse
+  rooms have 3-high archways); the **High Guard** (`high_guard`: samurai-Templar, dark tower emblem, sashimono) is 1.5x
+  and stands at the foot of the dark tower's stair.
+- **Trust** (`DogTrust`, world saved data, per city|player): the folk's confidence from trades (+2), gifts (sneak +
+  right-click a dog with something it values, one a day per dog) and hostile mob kills (+1); killing a dog -40.
+  30 opens the Keep's halls. The monks (sneak to trade with them) ask 5 questions answerable only from the 5 fables
+  on the library lecterns (`FABLES` in make_dog_city.py, `QUESTIONS/ANSWERS/RIGHT` in DogTrust - keep them in step);
+  a wrong answer restarts and makes them wait a minute. All 5 opens the courtyard. Guards turn players back
+  (teleport to last allowed spot), never attack.
+- Dark tower: solid base, door 4 up in a blackstone portal, a stair up to it in the Keep template; the spiral turns
+  on flat corner landings (corner *stairs* in a 1-wide well became outer-shaped lips and couldn't be climbed).
 - Every dog has a bed except the Biters. Dog variants for the trades, plus `pikeman`, `biter`, `bandaged`
   (not random, don't trade).
-- Round 2 (to do): guards warn then attack near/in the dark tower; Biters stay in the kennel; killing the bandaged
+- Round 2 (to do): guards (High Guards) warn then attack near/in the dark tower; Biters stay in the kennel; killing the bandaged
   dog: scream, Biters released, every dog turns rabid, permanently (world saved data).

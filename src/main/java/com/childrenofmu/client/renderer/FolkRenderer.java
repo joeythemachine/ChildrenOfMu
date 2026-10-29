@@ -22,7 +22,8 @@ public class FolkRenderer extends MobRenderer<FolkEntity, FolkModel> {
 
     @Override
     protected void scale(FolkEntity entity, PoseStack poseStack, float partialTick) {
-        float s = this.race.modelScale() * com.childrenofmu.entity.folk.FolkRace.variantScale(entity.getVariantName());
+        float s = this.race.modelScale() * com.childrenofmu.entity.folk.FolkRace.variantScale(entity.getVariantName())
+                * entity.getSize();
         poseStack.scale(s, s, s);
     }
 

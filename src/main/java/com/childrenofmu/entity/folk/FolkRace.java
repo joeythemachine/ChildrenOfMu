@@ -23,7 +23,7 @@ public enum FolkRace {
      */
     DOG("dog", new String[]{"monk", "husky_monk", "samurai", "archer", "stablemaster", "pikeman", "weaver", "dyer",
             "tailor", "shepherd", "smith", "tanner", "woodcutter", "butcher", "cook", "server", "musician", "teacher",
-            "biter", "bandaged"}, 0.9F, 7.0F, 0.7F, 1.35F,
+            "biter", "bandaged", "high_guard"}, 0.9F, 7.0F, 0.7F, 1.35F,
             20.0, 0.25, true, true, false),
     /** Frog folk: couriers, guards and traders of the swamp towns. A little taller than a block (froglets half that). */
     FROG("frog", new String[]{"jumper", "guard", "potioneer", "coppersmith", "chitinier", "fisher", "treasurer",
@@ -81,6 +81,21 @@ public enum FolkRace {
         return "froglet".equals(variant) ? 0.5F : "gar".equals(variant) ? 1.9F : 1.0F;
     }
 
+    /**
+     * A Dog's height as a fraction of a player's (Dog folk vary a great deal: half a player to half again as tall).
+     * The race's model is 3/4 of a player, so the folk's own size factor is this over 0.75. Workshop folk stay at or
+     * under 1.1 (a two-high door); soldiers go taller (their towers have three-high archways); the High Guard is 1.5.
+     */
+    public static float dogHeight(String variant, net.minecraft.util.RandomSource r) {
+        return switch (variant) {
+            case "high_guard" -> 1.5F;
+            case "bandaged" -> 0.75F;
+            case "samurai", "archer", "pikeman" -> 0.85F + r.nextFloat() * 0.5F;
+            case "biter" -> 0.8F + r.nextFloat() * 0.5F;
+            default -> 0.5F + (r.nextFloat() + r.nextFloat()) * 0.3F;     // 0.5 to 1.1, most about 0.8
+        };
+    }
+
     /** Variants that never leave home (the rats' Beautiful Ones, who only groom themselves). */
     public static boolean isHomebody(String variant) {
         return "beautiful".equals(variant);
@@ -89,14 +104,14 @@ public enum FolkRace {
     /** Which of a race's variants a spawn egg or a stray spawn may pick: city officials only come from the city. */
     public boolean randomVariant(String variant) {
         return !("cop".equals(variant) || "bookie".equals(variant) || "gar".equals(variant) || "biter".equals(variant)
-                || "bandaged".equals(variant) || (this == CAT && "archer".equals(variant))
+                || "bandaged".equals(variant) || "high_guard".equals(variant) || (this == CAT && "archer".equals(variant))
                 || (this == CAT && "guard".equals(variant)));
     }
 
     /** Folk who keep the law or run the bets rather than keep a shop. */
     public boolean tradesAs(String variant) {
         return switch (variant) {
-            case "cop", "bookie", "gar", "biter", "bandaged", "pikeman" -> false;
+            case "cop", "bookie", "gar", "biter", "bandaged", "pikeman", "high_guard" -> false;
             case "archer" -> this != CAT && this.trades;
             case "guard" -> this != CAT && this.trades;
             default -> this.trades;
@@ -113,6 +128,7 @@ public enum FolkRace {
             case "gong" -> new ItemStack(Items.WOODEN_SHOVEL);   // gong farmers dig out the city's cesspits
             case "farmer" -> new ItemStack(Items.WOODEN_HOE);
             case "samurai" -> new ItemStack(Items.IRON_SWORD);
+            case "high_guard" -> new ItemStack(Items.NETHERITE_SWORD);
             case "archer" -> new ItemStack(Items.BOW);   // dog archers and the cats' city archers alike
             case "stablemaster" -> new ItemStack(Items.LEAD);
             case "fisher" -> new ItemStack(Items.FISHING_ROD);

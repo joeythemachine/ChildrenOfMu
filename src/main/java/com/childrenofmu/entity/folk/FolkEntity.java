@@ -52,6 +52,9 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
     /** A baby, growing into an empty place in the city (synced, for its size). */
     private static final EntityDataAccessor<Boolean> BABY =
             SynchedEntityData.defineId(FolkEntity.class, EntityDataSerializers.BOOLEAN);
+    /** This one's own size, times the race's (Dog folk vary from half a player's height to half again; synced). */
+    private static final EntityDataAccessor<Float> SIZE =
+            SynchedEntityData.defineId(FolkEntity.class, EntityDataSerializers.FLOAT);
     /** A week of Minecraft days, for the thieving cats' changing stock. */
     private static final long WEEK = 7 * 24000L;
     /** Trades restock once per Minecraft day. */
@@ -69,6 +72,8 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
     private int merchantLevel = 1;
     private boolean levelUpPending;
     private static final int[] LEVEL_XP = {0, 10, 70, 150, 250};
+    /** Set when the save (or a template) already gave this one a size. */
+    private boolean sizePreset;
     /** Set when a structure or command chose the variant, so spawning doesn't pick another. */
     private boolean variantPreset;
     /** Set from a template ("StayRadius"): on spawning, stay within this many blocks of where it was put. */
@@ -324,6 +329,18 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
         if (this.race == FolkRace.RAT && "accountant".equals(getVariantName())) {
             setBase(Attributes.FOLLOW_RANGE, 96.0);           // a long way up to bed, at the top of the Justice Hall
         }
+        if (this.race == FolkRace.DOG && "high_guard".equals(getVariantName())) {
+            // The High Guard of the dark tower: huge, armoured, and not to be moved.
+            setBase(Attributes.MAX_HEALTH, 160.0);
+            setBase(Attributes.ATTACK_DAMAGE, 16.0);
+            setBase(Attributes.ARMOR, 20.0);
+            setBase(Attributes.ARMOR_TOUGHNESS, 8.0);
+            setBase(Attributes.KNOCKBACK_RESISTANCE, 1.0);
+            setBase(Attributes.MOVEMENT_SPEED, 0.3);
+            setBase(Attributes.FOLLOW_RANGE, 32.0);
+            setBase(Attributes.STEP_HEIGHT, 1.1);
+            this.setPersistenceRequired();
+        }
         if (isCop()) {
             boolean guard = !"cop".equals(getVariantName());
             setBase(Attributes.MAX_HEALTH, guard ? 36.0 : 30.0);
@@ -373,6 +390,19 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
         builder.define(PLAYING, false);
         builder.define(RESTING, false);
         builder.define(BABY, false);
+        builder.define(SIZE, 1.0F);
+    }
+
+    public float getSize() {
+        return this.entityData.get(SIZE);
+    }
+
+    /** Dogs: pick this one's size from its job (once; it's kept in the save). */
+    private void pickSize() {
+        if (this.race == FolkRace.DOG) {
+            this.entityData.set(SIZE, FolkRace.dogHeight(getVariantName(), this.random) / 0.75F);
+            this.refreshDimensions();
+        }
     }
 
     /** Folk open doors and climb ladders (see FolkNavigation). */
@@ -424,6 +454,9 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
             } while (!this.race.randomVariant(this.race.variant(pick)));
             setVariant(pick);
         }
+        if (!this.sizePreset) {
+            pickSize();
+        }
         applyVariantStats();
         this.setHealth(this.getMaxHealth());
         this.lastRestock = level.getLevel().getGameTime();
@@ -454,6 +487,15 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
     @Override
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
         return false;
+    }
+
+    /** For DogTrust: open this folk's trades for a player (the monks trade when spoken to sneaking). */
+    void openTrades(Player player) {
+        if (canTrade() && !getOffers().isEmpty() && (this.tradingPlayer == null || this.tradingPlayer == player)) {
+            this.getNavigation().stop();
+            setTradingPlayer(player);
+            openTradingScreen(player, tradeTitle(), this.race.weekly() || this.traveller ? 0 : this.merchantLevel);
+        }
     }
 
     public FolkRace getRace() {
@@ -523,6 +565,9 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        if (SIZE.equals(key)) {
+            this.refreshDimensions();
+        }
         super.onSyncedDataUpdated(key);
         if ((VARIANT.equals(key) || BABY.equals(key)) && this.race != null) {
             this.refreshDimensions();
@@ -534,7 +579,10 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
         if (this.race == null) {
             return super.getDefaultDimensions(pose);    // still being constructed
         }
-        return super.getDefaultDimensions(pose).scale(FolkRace.variantScale(getVariantName()));
+        net.minecraft.world.entity.EntityDimensions d = super.getDefaultDimensions(pose).scale(FolkRace.variantScale(getVariantName()));
+        float size = getSize();
+        // Taller and broader with size, but never wider than a doorway.
+        return size == 1.0F ? d : d.scale(Math.min(size, 0.9F / Math.max(0.1F, d.width())), size);
     }
 
     /** A beaten pit fighter yields rather than dies. */
@@ -645,6 +693,12 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
                 }
             }
             return InteractionResult.sidedSuccess(this.level().isClientSide);
+        }
+        if (hand == InteractionHand.MAIN_HAND && this.race == FolkRace.DOG) {
+            InteractionResult r = DogTrust.interact(this, player);
+            if (r != null) {
+                return r;
+            }
         }
         if (!canTrade() || hand != InteractionHand.MAIN_HAND || player.isSecondaryUseActive()) {
             return super.mobInteract(player, hand);
@@ -846,6 +900,9 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
             this.levelUpPending = true;    // like a villager: they level up once you close the window
         }
         this.playSound(getHurtSound(this.damageSources().generic()), 0.4F, 1.6F);
+        if (this.race == FolkRace.DOG && this.tradingPlayer instanceof net.minecraft.server.level.ServerPlayer sp) {
+            DogTrust.raise(sp, this.blockPosition(), 2);                  // fair dealing earns the folk's confidence
+        }
     }
 
     @Override
@@ -955,6 +1012,7 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putString("Variant", getVariantName());
+        tag.putFloat("Size", getSize());
         if (this.shop != null) {
             tag.putString("Shop", this.shop);
         }
@@ -1002,6 +1060,14 @@ public class FolkEntity extends PathfinderMob implements Merchant, net.minecraft
                 // Summoned with a chosen variant: hand it that variant's tool.
                 this.setItemSlot(EquipmentSlot.MAINHAND, this.race.heldItem(getVariantName()));
             }
+        }
+        if (tag.contains("Size")) {
+            this.entityData.set(SIZE, tag.getFloat("Size"));
+            this.sizePreset = true;
+            this.refreshDimensions();
+        } else if (this.race == FolkRace.DOG && tag.contains("Health")) {
+            pickSize();                                                   // a dog from before sizes: give it one
+            this.sizePreset = true;
         }
         this.lastRestock = tag.getLong("LastRestock");
         if (tag.contains("Shop")) {

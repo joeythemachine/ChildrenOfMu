@@ -348,8 +348,9 @@ def tower(seed, kind):
                 f = ("south" if z == a0 - 1 else "north") if z in (a0 - 1, a1 + 1) else ("east" if x == a0 - 1 else "west")
                 B.stair(x, 10, z, TILE[0], f)
     B.hip_roof(a0, a1, a0, a1, 15)
-    B.door(c, 1, a0, "south", kind="dark_oak_door")
-    B.put(c, 3, a0, "minecraft:chiseled_stone_bricks")
+    for y in (1, 2, 3):
+        B.air(c, y, a0)                                   # an archway three high: the tallest soldiers walk in
+    B.put(c, 4, a0, "minecraft:chiseled_stone_bricks")
     B.put(c, 0, a0 - 1, PLINTH)                       # a threshold, flush with the road
     B.bracket_lantern(c - 2, 3, a0 - 1, "north")
     B.bracket_lantern(c + 2, 3, a0 - 1, "north")
@@ -453,11 +454,13 @@ def gatehouse():
         B.put(x, 5, 11, "minecraft:chiseled_stone_bricks")
         B.put(x, 4, 11, "minecraft:iron_bars", {})                         # the portcullis, raised
     # The guard room: a door off the passage, a ladder up.
-    B.door(4, 1, 6, "west", kind="dark_oak_door")
+    for y in (1, 2, 3):
+        B.air(4, y, 6)                                    # archways three high off the passage
     B.ladder(2, 2, 1, 6, "south")
     B.put(2, 1, 9, "minecraft:barrel", {"facing": "up", "open": "false"})
     B.put(3, 4, 6, "minecraft:lantern", {"hanging": "true", "waterlogged": "false"})
-    B.door(8, 1, 6, "east", kind="dark_oak_door")
+    for y in (1, 2, 3):
+        B.air(8, y, 6)
     B.armor_stand(10, 1, 6, 90.0, kit="iron", hand="minecraft:iron_sword")
     B.put(9, 4, 6, "minecraft:lantern", {"hanging": "true", "waterlogged": "false"})
     for z in (1, 11):
@@ -578,10 +581,10 @@ def keep():
         if z % 4 != 0:
             B.put(HO0 + 1, hall_y, z, "minecraft:bookshelf")
             B.put(HO0 + 1, hall_y + 1, z, "minecraft:bookshelf")
-    for z in (16, 22, 28):
-        B.lectern(HO0 + 4, hall_y, z, "east", ["On Duty. The bow, the blade, the pike, the kennel: four duties, one dog.",
-                                                "On Silence. The tower is not spoken of. It is kept.",
-                                                "On the Bandages. He kneels so that we may stand."])
+    # The five fables of the Keep, one on each lectern. The monks' questions (DogTrust.QUESTIONS) are only
+    # answerable by one who has read them.
+    for z, pages in zip((10, 16, 22, 28, 34), FABLES):
+        B.lectern(HO0 + 4, hall_y, z, "east", pages)
         B.low_table(HO0 + 3, hall_y, z + 2)
     # The council chamber (the east hall, front half): a long low table with cushions.
     for z in range(HO0 + 3, KC - 2):
@@ -639,61 +642,152 @@ def keep():
         B.dog(x, hall_y, z, v)
     for (x, z) in ((KC - 2, HO0 - 1), (KC + 2, HO0 - 1)):
         B.dog(x, P + 1, z, "samurai", stay=3)                          # at the top of the stair
-    for (x, z) in ((KC - 2, TOWER[0] - 1), (KC + 2, TOWER[0] - 1)):
-        B.dog(x, P + 1, z, "samurai", stay=2)                          # at the tower's door
+    # The stair up to the dark tower's door: three wide, four steps, parapets either side (its top step is the
+    # tower template's front row, which the tower leaves empty below its portal).
+    for i in range(4):
+        z = TOWER[0] - 3 + i
+        for x in range(KC - 1, KC + 2):
+            for y in range(P + 1, P + 1 + i):
+                B.put(x, y, z, "minecraft:polished_blackstone_bricks")
+            B.stair(x, P + 1 + i, z, DARK[0], "south")
+            for y in range(P + 2 + i, P + 8):
+                B.air(x, y, z)
+        for x in (KC - 2, KC + 2):
+            if i < 3:
+                for y in range(P + 1, P + 2 + i):
+                    B.put(x, y, z, "minecraft:polished_blackstone_bricks")
+                B.put(x, P + 2 + i, z, "minecraft:polished_blackstone_brick_wall", {"up": "true", "north": "none",
+                                                                                    "south": "none", "east": "none",
+                                                                                    "west": "none", "waterlogged": "false"})
+    for (x, z) in ((KC - 3, TOWER[0] - 3), (KC + 3, TOWER[0] - 3)):
+        B.dog(x, P + 1, z, "high_guard", stay=1)                       # the High Guard, at the foot of the stair
     B.finish()
     return B
+
+
+# ---------------------------------------------------------------- the fables of the Keep
+FABLES = [
+    ["The First Fable:\nThe Three Bowls\n\nOld Brother Ashe set three bowls before his pupils. One was gold, and full of "
+     "clear water. One was oak, and heaped with rice. One was clay, and held nothing at all.",
+     "\"Take one,\" he said, \"and it is yours for life.\"\n\nThe proud pup took the gold, and was thirsty ever after, "
+     "for he would not drink and spoil its shine.",
+     "The hungry pup took the oak, and ate, and was hungry again by evening, and the bowl was empty.\n\nThe last pup "
+     "lifted the empty clay.",
+     "\"Why that one?\" the others laughed.\n\n\"Because it is the only one with room in it,\" she said, \"for "
+     "whatever the day brings.\"\n\nShe became abbot."],
+    ["The Second Fable:\nThe Two Banners\n\nTwo bannermen stood on the wall when the great storm came off the sea.",
+     "The first lashed his banner tight to the pole, every corner bound, so that the wind could not take it. The second "
+     "untied his cords and let the cloth run out loose on the wind.",
+     "By morning the first banner hung in rags, torn on its own knots.\n\nThe second still flew, whole, cracking in the "
+     "last of the gale.",
+     "\"What is held too hard is torn,\" said the captain. \"Let it fly, and it will be there when the wind is gone.\""],
+    ["The Third Fable:\nThe Butcher's Thumb\n\nThere was a butcher in the meat quarter who rested his thumb on the "
+     "scale as he weighed. Each cut weighed a little more than it was, and he grew fat and rich.",
+     "One winter his own pup fell ill, and he went to buy her medicine by weight. The apothecary rested his thumb on "
+     "the scale, as the butcher had taught the whole quarter to do.",
+     "The dose was short. The pup grew no better.\n\nThe butcher went home and wept, and from that day he weighed "
+     "with his thumb laid on his own heart,",
+     "where it weighs what a dog owes to every other dog.\n\nHis scales are kept in the Keep to this day, and they "
+     "are true."],
+    ["The Fourth Fable:\nThe Silent Bell\n\nIn the back hall hangs a bell that has not rung in a hundred years.",
+     "The young monks wished to melt it down. \"It does nothing,\" they said. \"It is only bronze taking up room.\""
+     "\n\nThe abbot said, \"It rings when the city is in peril.\"",
+     "\"Then it is worth nothing, for it never rings.\"\n\n\"Then count,\" said the abbot, \"every year it has "
+     "not rung. That is what it is worth.\"",
+     "They counted a hundred years, and did not melt it."],
+    ["The Fifth Fable:\nThe One Who Is Wrapped\n\nWhen the city was young, a sickness came that no medicine could "
+     "touch. It went from dog to dog, and the strong fell first.",
+     "One dog went up into the high room and called the sickness to himself. It came, all of it, out of the city and "
+     "into him, and he wrapped himself in linen so that none of it could get out again.",
+     "He kneels there still. He does not eat. He does not speak.\n\nWhat is bound must stay bound. Bring him no "
+     "harm, and never loose a single turn of the linen.",
+     "For what he holds, he holds for all of us."],
+]
 
 
 # ---------------------------------------------------------------- the dark tower
 def dark_tower():
     """
-    Nine square (walls 1..9, eleven with its eaves), dark stone, high above everything. A stair spirals up inside its
-    walls round a solid core to a bare wooden chamber at the top, where a dog kneels on a mat, wrapped in bandages.
+    Nine square (walls 1..9, eleven with its eaves), dark stone, high above everything. It stands on a solid base, its
+    one door four blocks up in a massive portal, reached by a stair from the courtyard (built in the Keep's template).
+    Inside, a stair spirals up round a solid core to a bare wooden chamber at the top, where a dog kneels on a mat,
+    wrapped in bandages. The spiral turns on flat landings, so every rise is a half-block stair step.
     """
     B = DogBuilder(11, 701)
     T = 44                     # the chamber's floor
     W0, W1 = 1, 9
-    B.floor(W0, W1, W0, W1, 0, "minecraft:polished_blackstone_bricks")
+    D = 5                      # the door's sill: the base below it is solid
+    BRICK, POL = "minecraft:polished_blackstone_bricks", "minecraft:polished_blackstone"
+    B.floor(W0, W1, W0, W1, 0, BRICK)
     for y in range(1, T + 6):
         for x in range(W0, W1 + 1):
             for z in range(W0, W1 + 1):
                 wall = x in (W0, W1) or z in (W0, W1)
                 core = 3 <= x <= 7 and 3 <= z <= 7
                 if wall:
-                    B.put(x, y, z, "minecraft:polished_blackstone" if y <= 2 or y % 9 == 0
-                          else "minecraft:polished_blackstone_bricks")
-                elif core and y < T:
+                    B.put(x, y, z, POL if y <= 2 or y % 9 == 0 else BRICK)
+                elif (core and y < T) or y < D:
                     B.put(x, y, z, "minecraft:blackstone" if (x + z + y) % 7 else "minecraft:gilded_blackstone")
                 else:
                     B.air(x, y, z)
-    # The door (front, -z), dark oak, under a dark lintel.
-    B.door(5, 1, W0, "south", kind="dark_oak_door")
-    B.put(5, 3, W0, "minecraft:chiseled_polished_blackstone")
-    # The spiral: round the core, one step a block, from the door to the chamber's floor.
+    # A battered foot round the base (but not before the door, where the stair arrives).
+    for x in range(0, 11):
+        for z in range(0, 11):
+            if (x in (0, 10) or z in (0, 10)) and not (z == 0 and 2 <= x <= 8):
+                f = "south" if z == 0 else "north" if z == 10 else "east" if x == 0 else "west"
+                B.stair(x, 1, z, DARK[0], f)
+                B.put(x, 0, z, BRICK)
+    # The portal: two great pillars standing out from the face, a deep lintel, a hood of upturned stairs, soul lamps.
+    for x in (3, 7):
+        for y in range(1, 12):
+            B.put(x, y, 0, "minecraft:chiseled_polished_blackstone" if y in (D + 3, 11) else BRICK)
+    for x in range(3, 8):
+        for y in (D + 4, D + 5):
+            B.put(x, y, 0, BRICK)
+        B.stair(x, D + 6, 0, DARK[0], "south", half="top")
+    B.put(5, D + 5, 0, "minecraft:chiseled_polished_blackstone")
+    for x in (4, 6):
+        B.put(x, D + 3, 0, "minecraft:soul_lantern", {"hanging": "true", "waterlogged": "false"})
+    # The door, dark oak, iron-barred above.
+    B.door(5, D, W0, "south", kind="dark_oak_door")
+    B.put(5, D + 2, W0, "minecraft:iron_bars", {})
+    B.put(5, D + 3, W0, "minecraft:chiseled_polished_blackstone")
+    # The spiral. Runs of stairs along each side, a flat landing at each corner.
     ring = [(5, 2), (6, 2), (7, 2), (8, 2)] + [(8, z) for z in range(3, 9)] + [(x, 8) for x in range(7, 1, -1)] \
         + [(2, z) for z in range(7, 1, -1)] + [(3, 2), (4, 2)]
+    corners = {(8, 2), (8, 8), (2, 8), (2, 2)}
     dirs = {(1, 0): "east", (-1, 0): "west", (0, 1): "south", (0, -1): "north"}
-    for i in range(T):
+    level = D                  # the height a climber stands at
+    i = 0
+    steps = []
+    while level < T + 1:
         x, z = ring[i % len(ring)]
         nx, nz = ring[(i + 1) % len(ring)]
-        h = i + 1
-        B.stair(x, h, z, DARK[0], dirs[(nx - x, nz - z)])
-        B.put(x, h - 1, z, DARK[1]) if h > 1 else None
-    # Soul lanterns on the core every so often, and slits of light.
-    for y in range(6, T, 8):
-        for (x, z) in ((5, 2), (8, 5), (5, 8), (2, 5)):
-            pass
-        B.put(5, y, 7 + 1, "minecraft:air") if False else None
-    for y in range(8, T, 9):
+        if (x, z) in corners:
+            B.put(x, level - 1, z, DARK[1])                                       # a landing, level with the last step
+        else:
+            B.stair(x, level, z, DARK[0], dirs[(nx - x, nz - z)])
+            if level - 1 >= D:
+                B.put(x, level - 1, z, DARK[1])
+            level += 1
+        steps.append((x, z, level))
+        if i % 6 == 3 and (x, z) not in corners:
+            # A soul torch on the core beside the step, at head height.
+            cx, cz = (x + (1 if x == 2 else -1 if x == 8 else 0), z + (1 if z == 2 else -1 if z == 8 else 0))
+            face = {(1, 0): "east", (-1, 0): "west", (0, 1): "south", (0, -1): "north"}[(x - cx, z - cz)] \
+                if (x - cx, z - cz) in ((1, 0), (-1, 0), (0, 1), (0, -1)) else None
+            if face and 3 <= cx <= 7 and 3 <= cz <= 7:
+                B.put(x, level + 1, z, "minecraft:soul_wall_torch", {"facing": face})
+        i += 1
+    # Slits of light up the walls.
+    for y in range(D + 8, T, 9):
         for (x, z) in ((5, W0), (W1, 5), (5, W1), (W0, 5)):
-            if not (z == W0 and y < 4):
-                B.put(x, y, z, "minecraft:iron_bars", {})
-    # The chamber: a bare wooden floor (the stair's last step comes up through it), narrow windows, a mat, the dog.
-    last = ring[(T - 1) % len(ring)]
+            B.put(x, y, z, "minecraft:iron_bars", {})
+    # The chamber: a bare wooden floor, open over the last of the stair; narrow windows, a mat, the dog.
+    well = {(x, z) for (x, z, lv) in steps if lv >= T - 2}
     for x in range(W0 + 1, W1):
         for z in range(W0 + 1, W1):
-            if (x, z) != last:
+            if (x, z) not in well:
                 B.put(x, T, z, "minecraft:spruce_planks")
     for (x, z) in ((5, W0), (W1, 5), (5, W1), (W0, 5)):
         B.put(x, T + 2, z, "minecraft:iron_bars", {})
