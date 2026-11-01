@@ -182,7 +182,25 @@ Python, no dependencies. Stage the save's region files from the laptop first.
   the courtyard arch to keep clear of it.
 - Every dog has a bed except the Biters. Dog variants for the trades, plus `pikeman`, `biter`, `bandaged`
   (not random, don't trade).
+- **Enforcement (owner, 2026-11-01, NOT YET BUILT; replaces the escort/teleport):** no teleporting the player.
+  Breaking a rule or nearing a forbidden place: a soldier blows a whistle and tells you to back off. In the Keep's
+  halls without leave: non-lethal smacks until you leave. Courtyard without leave: lethal blows until you leave.
+  The dark tower: they try to kill you. Each lowers your standing.
 - Round 2 (to do): guards (High Guards) warn then attack near/in the dark tower; Biters stay in the kennel; killing the bandaged
   dog: scream, Biters released, every dog turns rabid, permanently (world saved data). **After one night of the
   curse, every dog folk turns into a vanilla wolf** (owner, 2026-10-28).
 - Later: swords, pikes and bows from other weapon mods for the soldiers (owner wants this once the basics work).
+
+## Plans and lore (talk first, build later)
+
+- **Urlaki** (the owner's vampire-like affliction; Yuat, Onox, the rite, Dubalba, the pink slime cure, Ulm):
+  `design/URLAKI.md`. Keep to the owner's wording; mark Claude's ideas as suggestions.
+- **Inns** (agreed in talk): RCB City (name drawn per city from a list: The Wet Whisker, Upside Down, ...), Dog City
+  (Pilgrims' Lodge by the gate), Frog towns (Lily Lodge on stilts). **No inn for Ithk.** Innkeepers, rentable beds,
+  visitor folk of other races. The owner is making music and sound effects himself.
+- **Queued fixes:** rats stuck on ladders, especially under manholes. Tinkerer rats should tie into Create.
+- **Later:** crystal men; expand each race's religion and culture beyond trade (the Alu, the virtuous light gods who
+  sleep at night, are the shared base).
+- Goblin's Tyranny and Dwarf's Tyranny are in the owner's pack: **no goblins of our own**. Ideas worth borrowing:
+  race disguises, a lively tavern, caravans, reputation as currency, requests and quests, dead settlements.
+
