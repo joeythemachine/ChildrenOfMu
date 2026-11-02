@@ -7,7 +7,8 @@ the tools, and lessons already learned the hard way. Add to it when something ne
 
 - Minecraft **1.21.1, NeoForge** mod. Fantasy race folk and their towns: Ithk (eyeball folk, villages), RCB City
   (Rats, Cats, Bats), Frog towns, traveller huts. Later: Dog/Frog/Log, Lilbuns.
-- Owner plays it in their own pack, **Colonies & Skies** (MineColonies + Create and friends).
+- Owner plays it in their own pack, **Colonies & Skies** (MineColonies + Create and friends), installed at
+  `C:\Users\joshj\curseforge\minecraft\Instances\Colonies & Skies` (its `mods` folder lists the pack's mods).
 - Source of truth: the owner's laptop, `C:\MCModding\ChildrenOfMu`. Dev runs: `run\` (saves, logs, mods).
 - Mods in the dev run (`run\mods`): Domum Ornamentum, Quark (+Zeta), Supplementaries (+Moonlight),
   Farmer's Delight, Macaw's Roofs, JEI, Jade. Their block ids and blockstate properties are listed in
@@ -199,6 +200,12 @@ Python, no dependencies. Stage the save's region files from the laptop first.
 - **Inns** (agreed in talk): RCB City (name drawn per city from a list: The Wet Whisker, Upside Down, ...), Dog City
   (Pilgrims' Lodge by the gate), Frog towns (Lily Lodge on stilts). **No inn for Ithk.** Innkeepers, rentable beds,
   visitor folk of other races. The owner is making music and sound effects himself.
+  **Decided (2026-11-01):** price = emeralds plus some basic items; inn beds do NOT set respawn (temporary, like a
+  bedroll); The Wet Whisker's innkeeper is a cat; visiting travelling merchants trade from day one.
+- **Build order agreed:** (1) quick fixes: Dog City enforcement, rats on ladders/manholes, Dog City livestock;
+  (2) inns; (3) roads + roadside taverns; (4) Urlaki (Owum, Onox first); (5) a bigger RCB City from districts.
+- **Sessions:** one fresh session per build round (long sessions burn the owner's budget). Lore talk lives in its own
+  session and is written into `design/`.
 - **Roadside taverns** around the world as well as the traveller huts (owner). Asked: larger cities? roads between
   cities? (see the answer in chat 2026-11-01; not decided)
 - **Queued fixes:** rats stuck on ladders, especially under manholes. Tinkerer rats should tie into Create.
