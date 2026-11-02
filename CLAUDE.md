@@ -180,6 +180,7 @@ Python, no dependencies. Stage the save's region files from the laptop first.
   solid wall behind, no glass). **DC: paintings almost only in the Keep, never outdoors in any town unless told.**
   The Whipped (5x4) is unique: over the prayer hall's altar, candles before it; never in dwellings. The bell moved to
   the courtyard arch to keep clear of it.
+- **Owner: Dog City's farmland needs more livestock** (pastures, pens, barns), not mostly wheat. Not yet built.
 - Every dog has a bed except the Biters. Dog variants for the trades, plus `pikeman`, `biter`, `bandaged`
   (not random, don't trade).
 - **Enforcement (owner, 2026-11-01, NOT YET BUILT; replaces the escort/teleport):** no teleporting the player.
@@ -198,6 +199,8 @@ Python, no dependencies. Stage the save's region files from the laptop first.
 - **Inns** (agreed in talk): RCB City (name drawn per city from a list: The Wet Whisker, Upside Down, ...), Dog City
   (Pilgrims' Lodge by the gate), Frog towns (Lily Lodge on stilts). **No inn for Ithk.** Innkeepers, rentable beds,
   visitor folk of other races. The owner is making music and sound effects himself.
+- **Roadside taverns** around the world as well as the traveller huts (owner). Asked: larger cities? roads between
+  cities? (see the answer in chat 2026-11-01; not decided)
 - **Queued fixes:** rats stuck on ladders, especially under manholes. Tinkerer rats should tie into Create.
 - **Later:** crystal men; expand each race's religion and culture beyond trade (the Alu, the virtuous light gods who
   sleep at night, are the shared base).

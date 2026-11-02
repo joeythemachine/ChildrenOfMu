@@ -84,9 +84,44 @@ Open questions are at the end.
 - Over time they organise Dubalba into a labyrinth, evolving it into **Ulm**: a hellish village of sins made flesh.
 - Getting into Ulm requires committing acts of great evil and committing to evil magic.
 
+## The owner's answers (2026-11-01, later)
+
+- **Deaths in the rite:** the matching death strikes and is absorbed by the Onox. The player lives, and the buff
+  becomes the Pu buff.
+- **Blue souls:** *Usurp* (agreed): spend blue souls to secretly take a town's top seat. The town pays tribute and
+  its guards look away.
+- **The vision child:** a ghostly spirit that dissolves into the three colours when struck (agreed).
+- **The player is the Balba, Quoin of the Urlaki** (a kind of head vampire). The magic number is 3.
+  - The player doesn't eat the unafflicted. Instead the Balba becomes a giant head, 4x4x4 blocks, and scoops up 3
+    afflicted Urlaki in its mouth to carry them to another town and spread the curse there.
+  - The head power comes only once an entire town has been afflicted, and works only at night or in a thunderstorm.
+- **Cleansing the player** is the reverse of becoming the Balba:
+  - atone for every sin with acts of great charity and virtue;
+  - cure every Urlaki with the slime method (capture, vat, split);
+  - account for every Urlaki destroyed and condemned to Dubalba. To free their souls, the player enters a special
+    vat, is covered in slime, travels to Dubalba, turns into the giant head and swallows the condemned souls.
+- **The Gate of the Balba (when Dubalba has become Ulm):** the player is still the Quoin, but now there is a gate.
+  - Picture an arch: the Urlaki are its stones and the Balba is its keystone. Once the arch is large enough, a Gate
+    fits it.
+  - The Gate is a giant three-eyed head (red, green and blue eyes) with a black hole for a mouth.
+  - **The Fourth Death** collapses Ulm back into Dubalba. To commit it, the player must truly die, which resets the
+    overworld back to its original state.
+    *(Claude: build "original state" as undoing everything the Urlaki did (towns restored, curses lifted, Ulm closed),
+    not regenerating terrain. Confirm.)*
+
+## Dog City and the Urlaki (owner)
+
+- The Whipped is the metaphorical keystone of Dog City's culture. The dogs were wild, and through the pain of the
+  lash they evolved. It is the unpleasant ballast to their peace and harmony. Lose the Whipped and they lose their
+  history; the balance breaks and they become wild dogs again (hence wolves).
+- The link to the Urlaki is the sin that gained the balance. The dogs don't seek to surpass the equilibrium they
+  have; they aren't greedy, don't hold ambition as a virtue, and don't kill out of hate or revenge. But their society
+  was forged by those who do. They are man and dog.
+- The Urlaki are devious by nature and would most likely turn the dogs' adherence to tradition against them.
+
 ## Claude's suggestions (not agreed)
 
-- **Blue souls (ambition), pick one or more:**
+- **Blue souls (ambition)** (Usurp was chosen):
   - *Usurp*: spend blue souls to secretly take a town's top seat. The town pays you tribute and its guards look away.
     This fits the Urlaki goal of overthrowing whole towns.
   - *Command*: wake a thralled Urlaki as a servant that follows and fights for you, up to a limit.
